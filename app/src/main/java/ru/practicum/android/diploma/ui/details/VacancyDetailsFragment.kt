@@ -65,23 +65,10 @@ class VacancyDetailsFragment : Fragment() {
 
     private fun renderState(state: VacancyDetailsState) {
         when (state) {
-            is VacancyDetailsState.Error -> {
-                binding.apply {
-                    ivPlaceholder.isVisible = true
-                    tvPlaceholder.isVisible = true
-                    ivPlaceholder.setImageResource(R.drawable.server_error_cat)
-                    tvPlaceholder.setText(R.string.search_server_error)
-                    nsvDetailsContent.isVisible = false
-                }
-            }
-
-            is VacancyDetailsState.Loading -> {
-                binding.apply {
-                    nsvDetailsContent.isVisible = false
-                    progressBar.isVisible = true
-                }
-            }
-
+            is VacancyDetailsState.Error -> renderError()
+            is VacancyDetailsState.Loading -> renderLoading()
+            is VacancyDetailsState.NoConnection -> viewModel.getVacancyFromDb(state.vacancy.id)
+            is VacancyDetailsState.NotInDb -> renderNotInDb()
             is VacancyDetailsState.Content -> {
                 showContent(state.vacancy, state.currencySymbol)
                 binding.apply {
@@ -91,25 +78,38 @@ class VacancyDetailsFragment : Fragment() {
                     binding.nsvDetailsContent.isVisible = true
                 }
             }
-
-            is VacancyDetailsState.NoConnection -> {
-                viewModel.getVacancyFromDb(state.vacancy.id)
-            }
-
-            is VacancyDetailsState.NotInDb -> {
-                binding.apply {
-                    ivPlaceholder.setImageResource(R.drawable.no_internet_scull)
-                    tvPlaceholder.setText(R.string.search_no_connection)
-                    ivPlaceholder.isVisible = true
-                    tvPlaceholder.isVisible = true
-                    binding.progressBar.isVisible = false
-                    nsvDetailsContent.isVisible = false
-                }
-            }
         }
 
         if (state is VacancyDetailsState.Content) {
             setupToolbar(state)
+        }
+    }
+
+    private fun renderError() {
+        binding.apply {
+            ivPlaceholder.isVisible = true
+            tvPlaceholder.isVisible = true
+            ivPlaceholder.setImageResource(R.drawable.server_error_cat)
+            tvPlaceholder.setText(R.string.search_server_error)
+            nsvDetailsContent.isVisible = false
+        }
+    }
+
+    private fun renderLoading() {
+        binding.apply {
+            nsvDetailsContent.isVisible = false
+            progressBar.isVisible = true
+        }
+    }
+
+    private fun renderNotInDb() {
+        binding.apply {
+            ivPlaceholder.setImageResource(R.drawable.no_internet_scull)
+            tvPlaceholder.setText(R.string.search_no_connection)
+            ivPlaceholder.isVisible = true
+            tvPlaceholder.isVisible = true
+            binding.progressBar.isVisible = false
+            nsvDetailsContent.isVisible = false
         }
     }
 
