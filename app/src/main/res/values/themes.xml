@@ -8,6 +8,6 @@
         <item name="colorSecondary">@color/blackUniversal</item>
         <item name="colorSecondaryVariant">@color/whiteUniversal</item>
         <item name="colorOnSecondary">@color/lightGray</item>
-        <item name="android:statusBarColor">?attr/colorSecondaryVariant</item>
+        <item name="android:statusBarColor">@color/blackUniversal</item>
     </style>
 </resources>
