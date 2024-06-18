@@ -34,35 +34,32 @@ class VacancyDtoConverter {
     }
 
     private fun createSalary(salaryDto: SalaryDto?): Salary? {
-        return salaryDto?.let {
-            Salary(
-                currency = it.currency,
-                from = it.from,
-                gross = it.gross,
-                to = it.to
+        if (salaryDto == null) return null
+        return Salary(
+            currency = salaryDto.currency,
+            from = salaryDto.from,
+            gross = salaryDto.gross,
+            to = salaryDto.to
             )
-        }
     }
 
     private fun createContacts(contactsDto: ContactsDto?): Contacts? {
-        return contactsDto?.let {
-            Contacts(
-                email = it.email,
-                name = it.name,
-                phones = it.phones?.map { createPhone(it) }
+        if (contactsDto == null) return null
+        return Contacts(
+            email = contactsDto.email,
+            name = contactsDto.name,
+            phones = contactsDto.phones?.map { createPhone(it) }
             )
-        }
     }
 
     private fun createPhone(phoneDto: PhoneDto?): Phone? {
-        return phoneDto?.let {
-            Phone(
-                city = it.city,
-                comment = it.comment,
-                country = it.country,
-                number = it.number
+        if (phoneDto == null) return null
+        return Phone(
+            city = phoneDto.city,
+            comment = phoneDto.comment,
+            country = phoneDto.country,
+            number = phoneDto.number
             )
-        }
     }
 
     private fun extractKeySkills(keySkills: List<KeySkillDto>?): List<String?> {

@@ -33,35 +33,32 @@ class VacancyEntityConverter {
     }
 
     private fun createSalary(salaryEntity: SalaryEntity?): Salary? {
-        return salaryEntity?.let {
-            Salary(
-                currency = it.currency,
-                from = it.from,
-                gross = it.gross,
-                to = it.to
-            )
-        }
+        if (salaryEntity == null) return null
+        return Salary(
+            currency = salaryEntity.currency,
+            from = salaryEntity.from,
+            gross = salaryEntity.gross,
+            to = salaryEntity.to
+        )
     }
 
     private fun createContacts(contactsEntity: ContactsEntity?): Contacts? {
-        return contactsEntity?.let {
-            Contacts(
-                email = it.email,
-                name = it.name,
-                phones = it.phones?.map { createPhone(it) }
-            )
-        }
+        if (contactsEntity == null) return null
+        return Contacts(
+            email = contactsEntity.email,
+            name = contactsEntity.name,
+            phones = contactsEntity.phones?.map { createPhone(it) }
+        )
     }
 
     private fun createPhone(phoneEntity: PhoneEntity?): Phone? {
-        return phoneEntity?.let {
-            Phone(
-                city = it.city,
-                comment = it.comment,
-                country = it.country,
-                number = it.number
-            )
-        }
+        if (phoneEntity == null) return null
+        return Phone(
+            city = phoneEntity.city,
+            comment = phoneEntity.comment,
+            country = phoneEntity.country,
+            number = phoneEntity.number
+        )
     }
 
     fun map(vacancy: Vacancy): VacancyEntity {
@@ -87,34 +84,31 @@ class VacancyEntityConverter {
     }
 
     private fun createSalaryEntity(salary: Salary?): SalaryEntity? {
-        return salary?.let {
-            SalaryEntity(
-                currency = it.currency,
-                from = it.from,
-                gross = it.gross,
-                to = it.to
-            )
-        }
+        if (salary == null) return null
+        return SalaryEntity(
+            currency = salary.currency,
+            from = salary.from,
+            gross = salary.gross,
+            to = salary.to
+        )
     }
 
     private fun createContactsEntity(contacts: Contacts?): ContactsEntity? {
-        return contacts?.let {
-            ContactsEntity(
-                email = it.email,
-                name = it.name,
-                phones = it.phones?.map { createPhoneEntity(it) }
-            )
-        }
+        if (contacts == null) return null
+        return ContactsEntity(
+            email = contacts.email,
+            name = contacts.name,
+            phones = contacts.phones?.map { createPhoneEntity(it) }
+        )
     }
 
     private fun createPhoneEntity(phone: Phone?): PhoneEntity? {
-        return phone?.let {
-            PhoneEntity(
-                city = it.city,
-                comment = it.comment,
-                country = it.country,
-                number = it.number
-            )
-        }
+        if (phone == null) return null
+        return PhoneEntity(
+            city = phone.city,
+            comment = phone.comment,
+            country = phone.country,
+            number = phone.number
+        )
     }
 }

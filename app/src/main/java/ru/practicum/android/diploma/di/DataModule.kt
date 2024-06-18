@@ -25,7 +25,7 @@ val dataModule = module {
         Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db")
             .build()
     }
-    single<DictionaryInteractor> { DictionaryInteractorImpl(get(), get()) }
+    factory<DictionaryInteractor> { DictionaryInteractorImpl(get(), get()) }
     single<CurrencyRepository> { CurrencyRepositoryImpl(get(), get()) }
     single<DictionaryRepository> { DictionaryRepositoryImpl(get(), get()) }
     factory { VacancyEntityConverter() }
