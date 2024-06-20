@@ -126,12 +126,16 @@ class VacancyFavoriteFragment : Fragment() {
     private fun openFragmentVacancy(vacancyId: String) {
         findNavController().navigate(
             R.id.action_favoriteFragment_to_vacanciesFragment,
-            Bundle().apply { putString("vacancy_model", vacancyId) }
+            Bundle().apply { putString(VACANCY_ID, vacancyId) }
         )
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        internal const val VACANCY_ID = "vacancy_model"
     }
 }

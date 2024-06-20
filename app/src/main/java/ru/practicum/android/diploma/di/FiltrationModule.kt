@@ -5,6 +5,7 @@ import org.koin.dsl.module
 import ru.practicum.android.diploma.ui.location.LocationViewModel
 
 val filtrationModule = module {
+    // interactor just factory, repository just single
     viewModel {
         LocationViewModel()
     }

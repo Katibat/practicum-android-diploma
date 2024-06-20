@@ -12,6 +12,6 @@ import ru.practicum.android.diploma.ui.favorite.FavoriteViewModel
 val favoriteModule = module {
     factory { VacancyEntityConverter() }
     single<FavoritesRepository> { FavoritesRepositoryImpl(get(), get()) }
-    single<FavoritesInteractor> { FavoritesInteractorImpl(get()) }
+    factory<FavoritesInteractor> { FavoritesInteractorImpl(get()) }
     viewModel { FavoriteViewModel(get(), get()) }
 }

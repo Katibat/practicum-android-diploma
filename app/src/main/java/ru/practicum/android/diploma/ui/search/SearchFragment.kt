@@ -70,7 +70,7 @@ class SearchFragment : Fragment() {
                     val pos =
                         (binding.rvSearch.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
                     val itemsCount = _adapter?.itemCount ?: 0
-                    if (pos >= itemsCount - 1) {
+                    if (pos >= itemsCount - 1 || pos != RecyclerView.NO_POSITION) {
                         viewModel.onLastItemReached()
                     }
                 }
@@ -79,7 +79,7 @@ class SearchFragment : Fragment() {
         binding.etButtonSearch.doOnTextChanged { text, _, _, _ ->
             hideIconEditText(text)
             if (binding.etButtonSearch.hasFocus()) {
-                _adapter!!.vacancyList.clear()
+                _adapter?.vacancyList?.clear()
                 viewModel.searchDebounce(text.toString())
             }
         }
@@ -243,7 +243,7 @@ class SearchFragment : Fragment() {
     private fun openFragmentVacancy(vacancyId: String) {
         findNavController().navigate(
             R.id.action_searchFragment_to_vacanciesFragment,
-            Bundle().apply { putString("vacancy_model", vacancyId) }
+            Bundle().apply { putString(VACANCY_ID, vacancyId) }
         )
     }
 
@@ -295,5 +295,9 @@ class SearchFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        internal const val VACANCY_ID = "vacancy_model"
     }
 }

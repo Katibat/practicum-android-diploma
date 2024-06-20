@@ -58,7 +58,7 @@ class SearchViewModel(
                 _newPageLoading.postValue(true)
                 currPage = currPage!! + 1
                 val t = hashMapOf<String, String>()
-                t.put("page", "$currPage")
+                t.put(PAGE, "$currPage")
                 vacancySearchDebounce(Pair(lastSearchQueryText ?: "", t))
             }
         }
@@ -66,7 +66,7 @@ class SearchViewModel(
 
     private fun searchVacancies(request: String, options: HashMap<String, String>) {
         viewModelScope.launch {
-            options["text"] = request
+            options[TEXT] = request
             val currencyDictionary = dictionaryInteractor.getCurrencyDictionary()
             searchInteractor.searchVacancies(options).collect { result ->
                 _newPageLoading.postValue(false)
@@ -82,7 +82,7 @@ class SearchViewModel(
                     onSearchSuccess(VacancyPage(resulList, it.currPage, it.fromPages, it.found), currencyDictionary)
                 }
                 result.onFailure {
-                    Log.v("SEARCH", "page $currPage error ${it.message}")
+                    Log.v(SEARCH, "page $currPage error ${it.message}")
                     onSearchFailure(it.message)
                 }
                 isNextPageLoading = true
@@ -91,7 +91,7 @@ class SearchViewModel(
     }
 
     private fun onSearchFailure(message: String?) {
-        if (message != "-1") {
+        if (!message.equals(NO_INTERNET_RESULT_CODE)) {
             if (currPage != 0 && currPage != null) {
                 showNewPageErrorToast()
             } else {
@@ -141,5 +141,9 @@ class SearchViewModel(
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY_MILLIS = 2000L
+        private const val SEARCH = "SEARCH"
+        private const val PAGE = "page"
+        private const val TEXT = "text"
+        private const val NO_INTERNET_RESULT_CODE = "-1"
     }
 }
