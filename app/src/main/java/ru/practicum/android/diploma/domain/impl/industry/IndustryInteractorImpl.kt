@@ -7,6 +7,6 @@ import ru.practicum.android.diploma.domain.models.Industry
 
 class IndustryInteractorImpl(private val repository: IndustryRepository) : IndustryInteractor {
     override suspend fun getIndustries(industryId: String): Flow<Result<List<Industry>>> {
-        return repository.getIndustries()
+        return repository.getIndustries(industryId)
     }
 }
