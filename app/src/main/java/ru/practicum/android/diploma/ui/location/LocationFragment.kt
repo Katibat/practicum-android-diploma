@@ -66,21 +66,21 @@ class LocationFragment : Fragment() {
         setupClearButton()
     }
 
-    //    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint("ClickableViewAccessibility")
     private fun setupClearButton() {
-        binding.apply {
-            etCountry.setText("")
-            tilCountry.clearOnEndIconChangedListeners()
-            tilCountry.setEndIconDrawable(R.drawable.arrow_forward)
+        binding.tilCountry.setEndIconOnClickListener {
+            binding.etCountry.setText("")
+            viewModel.setRegion(null)
+            binding.tilRegion.setEndIconDrawable(R.drawable.arrow_forward)
             updateClearButtonVisibility()
             setupSelectButton()
-            setupCountryField()
+            setupRegionField()
         }
 
-        binding.apply {
-            etRegion.setText("")
-            tilRegion.clearOnEndIconChangedListeners()
-            tilRegion.setEndIconDrawable(R.drawable.arrow_forward)
+        binding.tilRegion.setEndIconOnClickListener {
+            binding.etRegion.setText("")
+            viewModel.setCountry(null)
+            binding.tilRegion.setEndIconDrawable(R.drawable.arrow_forward)
             updateClearButtonVisibility()
             setupSelectButton()
             setupRegionField()
