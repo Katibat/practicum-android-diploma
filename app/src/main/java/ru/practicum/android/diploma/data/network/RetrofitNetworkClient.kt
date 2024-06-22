@@ -8,6 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import ru.practicum.android.diploma.BuildConfig
+import ru.practicum.android.diploma.data.dto.AreaDTO
 import ru.practicum.android.diploma.data.dto.CountriesRequest
 import ru.practicum.android.diploma.data.dto.CountriesResponse
 import ru.practicum.android.diploma.data.dto.CurrencyRequest
@@ -20,6 +21,8 @@ import ru.practicum.android.diploma.data.dto.SearchResponse
 import ru.practicum.android.diploma.data.dto.VacancyDetailsRequest
 import ru.practicum.android.diploma.data.dto.VacancyDetailsResponse
 import java.io.IOException
+import java.net.ConnectException
+import java.net.SocketTimeoutException
 
 class RetrofitNetworkClient(
     private val headHunterApi: HeadHunterApi,
@@ -62,6 +65,22 @@ class RetrofitNetworkClient(
             }
 
             else -> Response().apply { resultCode = CLIENT_ERROR_RESULT_CODE }
+        }
+    }
+
+    override suspend fun getCountries(): Result<List<AreaDTO>> {
+        if (!isConnected()) {
+            return Result.failure(ConnectException())
+        }
+        return withContext(Dispatchers.IO) {
+            try {
+                val countries = headHunterApi.getCountries()
+                Result.success(countries)
+            } catch (e: HttpException) {
+                Result.failure(e)
+            } catch (e: SocketTimeoutException) {
+                Result.failure(e)
+            } as Result<List<AreaDTO>>
         }
     }
 
