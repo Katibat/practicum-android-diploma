@@ -10,19 +10,18 @@ import ru.practicum.android.diploma.domain.api.industry.IndustryRepository
 import ru.practicum.android.diploma.domain.models.Industry
 
 class IndustryRepositoryImpl(
-    private val client: NetworkClient,
-    private val converter: IndustryConverter
+    private val client: NetworkClient
 ) : IndustryRepository {
 
-    override suspend fun getIndustries(industryId: String): Flow<Result<List<Industry>>> = flow {
-        val response = client.doRequest(IndustryRequest(industryId))
+    override suspend fun getIndustries(): Flow<Result<List<Industry>>> = flow {
+        val response = client.doRequest(IndustryRequest())
         when (response.resultCode) {
             CLIENT_SUCCESS_RESULT_CODE -> {
                 val list = (response as IndustryResponse).items
                 if (list.isEmpty()) {
                     emit(Result.failure(Throwable(EMPTY_BODY_CODE.toString())))
                 } else {
-                    val industryList = converter.mapToList(list)
+                    val industryList = IndustryConverter.mapToList(list)
                     emit(Result.success(industryList))
                 }
             }

@@ -14,18 +14,19 @@ import ru.practicum.android.diploma.ui.details.VacancyDetailsViewModel.Companion
 class IndustryViewModel(private val interactor: IndustryInteractor) : ViewModel() {
     private val industriesList: MutableList<Industry> = mutableListOf()
     private var lastSearchQueryText: String? = null
-    private var isClickAllowed = true
 
     private val _stateIndustry = MutableLiveData<IndustryState>()
     val stateIndustry: LiveData<IndustryState> get() = _stateIndustry
 
-    fun searchIndustries(industryId: String?) {
+    private val _selectIndustry = MutableLiveData<Industry>()
+    val selectIndustry: LiveData<Industry> get() = _selectIndustry
+
+    fun fetchIndustries() {
         _stateIndustry.postValue(IndustryState.Loading)
         viewModelScope.launch {
-            if (industryId != null) {
-                interactor.getIndustries(industryId).collect { result ->
+            interactor.getIndustries().collect { result ->
                     industriesList.clear()
-                    result.onSuccess {
+                    result.onSuccess { it ->
                         industriesList.addAll(it)
                         if (industriesList.isNotEmpty()) {
                             industriesList.sortBy { it.name }
@@ -47,17 +48,14 @@ class IndustryViewModel(private val interactor: IndustryInteractor) : ViewModel(
                         }
                     }
                 }
-            } else {
-                renderState(IndustryState.NotFound)
-            }
         }
     }
 
-    fun search(s: String) {
+    private fun search(s: String) {
         _stateIndustry.postValue(IndustryState.Loading)
         viewModelScope.launch {
-            val filteredIndustry = industriesList?.filter { it.name.contains(s, ignoreCase = true) }
-            if (filteredIndustry.isNullOrEmpty()) {
+            val filteredIndustry = industriesList.filter { it.name.contains(s, ignoreCase = true) }
+            if (filteredIndustry.isEmpty()) {
                 _stateIndustry.postValue(IndustryState.NotFound)
             } else {
                 _stateIndustry.postValue(IndustryState.Content(filteredIndustry))
@@ -65,8 +63,8 @@ class IndustryViewModel(private val interactor: IndustryInteractor) : ViewModel(
         }
     }
 
-    fun saveSelectIndustry() {
-        _stateIndustry.postValue(IndustryState.Selected)
+    fun saveSelectIndustry(industry: Industry) {
+        _selectIndustry.postValue(industry)
     }
 
     private fun renderState(state: IndustryState) {
@@ -82,19 +80,7 @@ class IndustryViewModel(private val interactor: IndustryInteractor) : ViewModel(
         }
     }
 
-    fun clickDebounce(): Boolean {
-        val current = isClickAllowed
-        if (isClickAllowed) {
-            viewModelScope.launch {
-                delay(CLICK_DEBOUNCE_DELAY_MILLIS)
-                isClickAllowed = true
-            }
-        }
-        return current
-    }
-
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY_MILLIS = 2000L
-        private const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L
     }
 }

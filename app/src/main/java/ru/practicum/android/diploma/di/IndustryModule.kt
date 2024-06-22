@@ -9,7 +9,7 @@ import ru.practicum.android.diploma.domain.impl.industry.IndustryInteractorImpl
 import ru.practicum.android.diploma.ui.industry.IndustryViewModel
 
 val industryModule = module {
-    single<IndustryRepository> { IndustryRepositoryImpl(get(), get()) }
+    single<IndustryRepository> { IndustryRepositoryImpl(get()) }
     factory<IndustryInteractor> { IndustryInteractorImpl(get()) }
     viewModel {
         IndustryViewModel(get())

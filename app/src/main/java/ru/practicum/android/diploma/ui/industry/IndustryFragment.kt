@@ -23,12 +23,12 @@ class IndustryFragment : Fragment() {
     private var _binding: FragmentIndustryBinding? = null
     private val binding get() = _binding!!
     private val viewModel by viewModel<IndustryViewModel>()
-    private var industriesList: List<Industry>? = null
     private var selectedIndustry: Industry? = null
     private val adapter = IndustryAdapter { industry ->
         selectedIndustry = industry
+        viewModel.saveSelectIndustry(industry)
         hideKeyboard()
-        viewModel.saveSelectIndustry()
+        viewModel.saveSelectIndustry(industry)
     }
 
     private val toolbar by lazy { (requireActivity() as RootActivity).toolbar }
@@ -49,10 +49,14 @@ class IndustryFragment : Fragment() {
             render(it)
         }
 
+        viewModel.selectIndustry.observe(viewLifecycleOwner) {
+            renderSelected(it)
+        }
+
         binding.rvIndustry.layoutManager = LinearLayoutManager(requireContext())
         binding.rvIndustry.adapter = adapter
 
-        viewModel.searchIndustries(selectedIndustry?.id)
+        viewModel.fetchIndustries()
 
         binding.etSelectIndustry.addTextChangedListener(textWatcherListener())
 
@@ -82,9 +86,8 @@ class IndustryFragment : Fragment() {
 
     private fun selectIndustry(industry: Industry?) {
         if (industry != null) {
-            industriesList?.forEach {
-                it.isSelected = it.id == industry.id
-            }
+            selectedIndustry = industry
+            viewModel.saveSelectIndustry(industry)
             adapter.selectedIndustry = industry
             adapter.notifyDataSetChanged()
         }
@@ -94,12 +97,10 @@ class IndustryFragment : Fragment() {
         when (state) {
             is IndustryState.Loading -> renderLoading()
             is IndustryState.NotFound -> renderNotFound()
-            is IndustryState.Selected -> renderSelected()
             is IndustryState.ServerError -> renderServerError()
             is IndustryState.NoConnection -> renderNoConnection()
             is IndustryState.Content -> {
                 renderContent()
-                industriesList = state.industries
                 updateAdapterData(state.industries)
                 selectIndustry(getIndustry())
             }
@@ -130,14 +131,24 @@ class IndustryFragment : Fragment() {
         }
     }
 
-    private fun renderSelected() {
-        with(binding) {
-            buttonSelectIndustry.isVisible = true
-            progressBar.isVisible = false
+    private fun renderSelected(industry: Industry?) {
+        if(industry != null) {
+            with(binding) {
+                buttonSelectIndustry.isVisible = true
+                progressBar.isVisible = false
+            }
         }
     }
 
     private fun renderContent() {
+        adapter.industries.clear()
+        val list = if (viewModel.stateIndustry.value is IndustryState.Content) {
+            (viewModel.stateIndustry.value as IndustryState.Content).industries
+        } else {
+            listOf()
+        }
+        adapter.industries.addAll(list)
+        adapter.notifyDataSetChanged()
         with(binding) {
             rvIndustry.isVisible = true
             progressBar.isVisible = false
@@ -174,13 +185,13 @@ class IndustryFragment : Fragment() {
     private fun textWatcherListener() = object : TextWatcher {
         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            if (!binding.etSelectIndustry.text.toString().isNullOrEmpty()) {
+            if (binding.etSelectIndustry.text.toString().isNotEmpty()) {
                 binding.ivClear.setImageResource(R.drawable.clean_icon_black)
                 viewModel.searchDebounce(s.toString())
             } else {
                 binding.ivClear.setImageResource(R.drawable.search_icon)
                 hideKeyboard()
-                viewModel.searchIndustries(selectedIndustry?.id)
+                viewModel.fetchIndustries()
             }
         }
 
