@@ -25,29 +25,28 @@ class IndustryViewModel(private val interactor: IndustryInteractor) : ViewModel(
         _stateIndustry.postValue(IndustryState.Loading)
         viewModelScope.launch {
             interactor.getIndustries().collect { result ->
-                    industriesList.clear()
-                    result.onSuccess { it ->
-                        industriesList.addAll(it)
-                        if (industriesList.isNotEmpty()) {
-                            industriesList.sortBy { it.name }
-                            renderState(IndustryState.Content(industriesList))
-                        } else {
-                            renderState(IndustryState.NotFound)
-                        }
+                industriesList.clear()
+                result.onSuccess {
+                    industriesList.addAll(it)
+                    if (industriesList.isNotEmpty()) {
+                        industriesList.sortBy { it.name }
+                        renderState(IndustryState.Content(industriesList))
+                    } else {
+                        renderState(IndustryState.NotFound)
                     }
-                    result.onFailure {
-                        val resultCode = it.message
-                        when (resultCode) {
-                            NO_INTERNET_RESULT_CODE -> {
-                                renderState(IndustryState.NoConnection(R.string.search_no_connection))
-                            }
-
-                            else -> {
-                                renderState(IndustryState.ServerError(R.string.search_server_error))
-                            }
+                }
+                result.onFailure {
+                    val resultCode = it.message
+                    when (resultCode) {
+                        NO_INTERNET_RESULT_CODE -> {
+                            renderState(IndustryState.NoConnection(R.string.search_no_connection))
+                        }
+                        else -> {
+                            renderState(IndustryState.ServerError(R.string.search_server_error))
                         }
                     }
                 }
+            }
         }
     }
 

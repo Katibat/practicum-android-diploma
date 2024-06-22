@@ -132,7 +132,7 @@ class IndustryFragment : Fragment() {
     }
 
     private fun renderSelected(industry: Industry?) {
-        if(industry != null) {
+        if (industry != null) {
             with(binding) {
                 buttonSelectIndustry.isVisible = true
                 progressBar.isVisible = false
