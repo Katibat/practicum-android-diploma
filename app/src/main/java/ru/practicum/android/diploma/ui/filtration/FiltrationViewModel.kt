@@ -16,13 +16,9 @@ class FiltrationViewModel(private val filtrationInteractor: FiltrationInteractor
     private val _isChanged = MutableLiveData<Boolean>(false)
     val isChanged: LiveData<Boolean> get() = _isChanged
 
-    init {
-        getFiltrationFromPrefs()
-    }
-
-    private fun saveStateToPrefs() {
+    private fun saveStateToPrefs(filtrationToSave: Filtration) {
         viewModelScope.launch {
-            filtrationInteractor.saveFiltration(filtration.value)
+            filtrationInteractor.saveFiltration(filtrationToSave)
         }
     }
 
@@ -80,18 +76,13 @@ class FiltrationViewModel(private val filtrationInteractor: FiltrationInteractor
         )
     }
 
-    private fun renderFiltration(filtration: Filtration?) {
-        if (filtration != null) {
-            _filtration.postValue(filtration!!)
+    private fun renderFiltration(renderFiltration: Filtration?) {
+        if (renderFiltration != null) {
+            _filtration.postValue(renderFiltration!!)
+            saveStateToPrefs(renderFiltration)
         } else {
             setEmpty()
         }
-        saveStateToPrefs()
-    }
-
-    private fun isEmpty(filtration: Filtration): Boolean {
-        val checkFiltrationNull = filtration.industry == null && filtration.area == null
-        return checkFiltrationNull && filtration.salary.isNullOrEmpty() && !filtration.onlyWithSalary
     }
 
     fun setEmpty() {

@@ -6,4 +6,3 @@ interface PreferencesProvider {
     suspend fun saveFiltration(filtration: Filtration?)
     suspend fun getFiltration(): Filtration?
 }
-

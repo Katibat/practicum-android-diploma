@@ -39,6 +39,7 @@ class FiltrationFragment : Fragment() {
         viewModel.filtration.observe(viewLifecycleOwner) {
             render(it)
         }
+        viewModel.getFiltrationFromPrefs()
         var industry = getIndustry()
         if (industry != null) viewModel.setIndustry(industry)
         val country = getCountry()
@@ -81,7 +82,6 @@ class FiltrationFragment : Fragment() {
             }
             checkBoxSalary.isChecked = filtration.onlyWithSalary
             buttonRemove.isVisible = true
-            viewModel.
         }
     }
 
