@@ -58,6 +58,12 @@ class RetrofitNetworkClient(
                 }
             }
 
+            is CountriesRequest -> {
+                withContext(Dispatchers.IO) {
+                    doCountriesRequest()
+                }
+            }
+
             else -> Response().apply { resultCode = CLIENT_ERROR_RESULT_CODE }
         }
     }
@@ -117,19 +123,15 @@ class RetrofitNetworkClient(
         }
     }
 
-    override suspend fun getCountries(): Result<List<AreaDTO>> {
-        if (!isConnected()) {
-            return Result.failure(ConnectException())
-        }
-        return withContext(Dispatchers.IO) {
-            try {
-                val countries = headHunterApi.getCountries()
-                Result.success(countries)
-            } catch (e: HttpException) {
-                Result.failure(e)
-            } catch (e: SocketTimeoutException) {
-                Result.failure(e)
+    private suspend fun doCountriesRequest(): Response {
+        try {
+            val countries = headHunterApi.getCountries()
+            return CountriesResponse(countries.body()).apply {
+                resultCode = CLIENT_SUCCESS_RESULT_CODE
             }
+        } catch (e: HttpException) {
+            Log.e(NETWORK_ERROR, e.toString())
+            return CountriesResponse(listOf()).apply { resultCode = CLIENT_ERROR_RESULT_CODE }
         }
     }
 
