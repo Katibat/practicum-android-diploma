@@ -41,6 +41,7 @@ class IndustryViewModel(private val interactor: IndustryInteractor) : ViewModel(
                         NO_INTERNET_RESULT_CODE -> {
                             renderState(IndustryState.NoConnection(R.string.search_no_connection))
                         }
+
                         else -> {
                             renderState(IndustryState.ServerError(R.string.search_server_error))
                         }

@@ -19,7 +19,6 @@ import ru.practicum.android.diploma.domain.models.Country
 import ru.practicum.android.diploma.domain.models.Filtration
 import ru.practicum.android.diploma.domain.models.Industry
 import ru.practicum.android.diploma.domain.models.Region
-import ru.practicum.android.diploma.ui.industry.IndustryFragment
 import ru.practicum.android.diploma.ui.root.RootActivity
 
 class FiltrationFragment : Fragment() {
@@ -145,7 +144,6 @@ class FiltrationFragment : Fragment() {
             ilAreaOfWork.setEndIconOnClickListener { onAreaClick.invoke() }
         }
     }
-
 
     private val onAreaClick: () -> Unit = {
         val country = viewModel.filtration.value?.area

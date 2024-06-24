@@ -10,4 +10,3 @@ data class Region(
     val countryId: String?,
     val cities: List<City>
 ) : Parcelable
-

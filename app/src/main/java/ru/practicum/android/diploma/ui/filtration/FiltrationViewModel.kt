@@ -44,7 +44,6 @@ class FiltrationViewModel(private val filtrationInteractor: FiltrationInteractor
         )
     }
 
-
     fun setSalary(salary: String) {
         _isChanged.value = true
         renderFiltration(
@@ -97,7 +96,6 @@ class FiltrationViewModel(private val filtrationInteractor: FiltrationInteractor
     fun setEmpty() {
         renderFiltration(Filtration(null, null, null, false))
     }
-
 
     companion object {
         private const val SALARY_DEBOUNCE = 2000L

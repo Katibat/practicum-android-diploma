@@ -40,7 +40,7 @@ class VacancyDtoConverter {
             from = salaryDto.from,
             gross = salaryDto.gross,
             to = salaryDto.to
-            )
+        )
     }
 
     private fun createContacts(contactsDto: ContactsDto?): Contacts? {
@@ -49,7 +49,7 @@ class VacancyDtoConverter {
             email = contactsDto.email,
             name = contactsDto.name,
             phones = contactsDto.phones?.map { createPhone(it) }
-            )
+        )
     }
 
     private fun createPhone(phoneDto: PhoneDto?): Phone? {
@@ -59,7 +59,7 @@ class VacancyDtoConverter {
             comment = phoneDto.comment,
             country = phoneDto.country,
             number = phoneDto.number
-            )
+        )
     }
 
     private fun extractKeySkills(keySkills: List<KeySkillDto>?): List<String?> {
