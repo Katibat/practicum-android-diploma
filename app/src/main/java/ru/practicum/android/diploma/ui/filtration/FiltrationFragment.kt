@@ -81,6 +81,7 @@ class FiltrationFragment : Fragment() {
             }
             checkBoxSalary.isChecked = filtration.onlyWithSalary
             buttonRemove.isVisible = true
+            viewModel.
         }
     }
 

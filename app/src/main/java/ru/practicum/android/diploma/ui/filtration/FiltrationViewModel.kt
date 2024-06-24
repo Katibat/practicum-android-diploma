@@ -86,6 +86,7 @@ class FiltrationViewModel(private val filtrationInteractor: FiltrationInteractor
         } else {
             setEmpty()
         }
+        saveStateToPrefs()
     }
 
     private fun isEmpty(filtration: Filtration): Boolean {
