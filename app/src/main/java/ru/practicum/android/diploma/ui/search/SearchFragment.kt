@@ -41,7 +41,7 @@ class SearchFragment : Fragment() {
                 val pos =
                     (binding.rvSearch.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
                 val itemsCount = _adapter?.itemCount ?: 0
-                if (pos >= itemsCount - 1 || pos != RecyclerView.NO_POSITION) {
+                if (pos >= itemsCount - 1 && pos != RecyclerView.NO_POSITION) {
                     viewModel.onLastItemReached()
                 }
             }
