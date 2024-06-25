@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -80,7 +81,7 @@ class SearchFragment : Fragment() {
             hideIconEditText(text)
             if (binding.etButtonSearch.hasFocus()) {
                 _adapter?.vacancyList?.clear()
-                viewModel.searchDebounce(text.toString())
+                viewModel.searchDebounce(text.toString(), false)
             }
         }
 
@@ -94,6 +95,16 @@ class SearchFragment : Fragment() {
         }
         viewModel.nextPageError.observe(viewLifecycleOwner) {
             renderNewPageError(it)
+        }
+        viewModel.filtration.observe(viewLifecycleOwner) {
+            setFiltrationIcon(it != null)
+        }
+        viewModel.updateFiltration()
+        setFragmentResultListener(FRAGMENT_RESULT_KEY) { requestKey, bundle ->
+            val isApply = bundle.getBoolean(IS_APPLY_KEY)
+            if (isApply) {
+                viewModel.searchDebounce(binding.etButtonSearch.text.toString(), isApply)
+            }
         }
     }
 
@@ -240,6 +251,14 @@ class SearchFragment : Fragment() {
         }
     }
 
+    private fun setFiltrationIcon(hasFiltration: Boolean) {
+        if (hasFiltration) {
+            toolbar.menu.findItem(R.id.filters).setIcon(R.drawable.filter_on)
+        } else {
+            toolbar.menu.findItem(R.id.filters).setIcon(R.drawable.filter_off)
+        }
+    }
+
     private fun openFragmentVacancy(vacancyId: String) {
         findNavController().navigate(
             R.id.action_searchFragment_to_vacanciesFragment,
@@ -299,5 +318,7 @@ class SearchFragment : Fragment() {
 
     companion object {
         internal const val VACANCY_ID = "vacancy_model"
+        private const val FRAGMENT_RESULT_KEY = "fragmentResult"
+        private const val IS_APPLY_KEY = "isApply"
     }
 }
