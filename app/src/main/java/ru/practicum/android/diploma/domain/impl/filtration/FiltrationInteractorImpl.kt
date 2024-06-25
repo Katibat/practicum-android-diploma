@@ -5,11 +5,11 @@ import ru.practicum.android.diploma.domain.api.filtration.FiltrationRepository
 import ru.practicum.android.diploma.domain.models.Filtration
 
 class FiltrationInteractorImpl(private val filtrationRepository: FiltrationRepository) : FiltrationInteractor {
-    override suspend fun saveFiltration(filtration: Filtration?) {
+    override fun saveFiltration(filtration: Filtration?) {
         filtrationRepository.saveFiltration(filtration)
     }
 
-    override suspend fun getFiltration(): Filtration? {
+    override fun getFiltration(): Filtration? {
         return filtrationRepository.getFiltration()
     }
 }

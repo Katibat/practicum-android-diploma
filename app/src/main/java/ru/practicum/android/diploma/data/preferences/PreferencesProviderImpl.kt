@@ -9,7 +9,7 @@ class PreferencesProviderImpl(
     private val gson: Gson,
     private val prefs: SharedPreferences,
 ) : PreferencesProvider {
-    override suspend fun saveFiltration(filtration: Filtration?) {
+    override fun saveFiltration(filtration: Filtration?) {
         if (filtration == null) {
             prefs.edit().putString(FILTRATION_LABEL, gson.toJson(null)).apply()
         } else {
@@ -23,7 +23,7 @@ class PreferencesProviderImpl(
         }
     }
 
-    override suspend fun getFiltration(): Filtration? {
+    override fun getFiltration(): Filtration? {
         val filtrationString = prefs.getString(FILTRATION_LABEL, "")
         val itemType = object : TypeToken<Filtration?>() {}.type
         val filtration = gson.fromJson<Filtration?>(filtrationString, itemType)

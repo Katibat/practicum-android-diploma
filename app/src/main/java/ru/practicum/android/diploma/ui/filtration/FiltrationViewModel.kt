@@ -1,11 +1,8 @@
 package ru.practicum.android.diploma.ui.filtration
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.api.filtration.FiltrationInteractor
 import ru.practicum.android.diploma.domain.models.Country
 import ru.practicum.android.diploma.domain.models.Filtration
@@ -18,15 +15,11 @@ class FiltrationViewModel(private val filtrationInteractor: FiltrationInteractor
     val isChanged: LiveData<Boolean> get() = _isChanged
 
     private fun saveStateToPrefs(filtrationToSave: Filtration) {
-        viewModelScope.launch {
-            filtrationInteractor.saveFiltration(filtrationToSave)
-        }
+        filtrationInteractor.saveFiltration(filtrationToSave)
     }
 
     fun getFiltrationFromPrefs() {
-        viewModelScope.launch {
-            renderFiltration(filtrationInteractor.getFiltration())
-        }
+        renderFiltration(filtrationInteractor.getFiltration())
     }
 
     fun setCheckbox(onlyWithSalary: Boolean) {
@@ -42,7 +35,6 @@ class FiltrationViewModel(private val filtrationInteractor: FiltrationInteractor
     }
 
     fun setSalary(salary: String?) {
-        Log.v("FILTRATION", "salary $salary")
         _isChanged.value = true
         renderFiltration(
             Filtration(
@@ -80,7 +72,7 @@ class FiltrationViewModel(private val filtrationInteractor: FiltrationInteractor
 
     private fun renderFiltration(renderFiltration: Filtration?) {
         if (renderFiltration != null) {
-            _filtration.postValue(renderFiltration!!)
+            _filtration.value = renderFiltration!!
             saveStateToPrefs(renderFiltration)
         } else {
             setEmpty()
