@@ -93,6 +93,9 @@ class FiltrationFragment : Fragment() {
             }
             checkBoxSalary.isChecked = filtration.onlyWithSalary
             buttonRemove.isVisible = true
+            val checkEmpty =
+                filtration.salary.isNullOrEmpty() && filtration.industry == null && filtration.area == null
+            buttonRemove.isVisible = !(checkEmpty && !filtration.onlyWithSalary)
         }
     }
 
