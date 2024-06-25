@@ -63,7 +63,7 @@ class FiltrationFragment : Fragment() {
         }
         binding.buttonSave.setOnClickListener {
             val args = Bundle()
-            args.putBoolean(IS_APPLY_KEY, false)
+            args.putBoolean(IS_APPLY_KEY, true)
             setFragmentResult(FRAGMENT_RESULT_KEY, args)
             findNavController().navigateUp()
         }
