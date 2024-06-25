@@ -3,12 +3,14 @@ package ru.practicum.android.diploma.ui.filtration
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
@@ -68,6 +70,15 @@ class FiltrationFragment : Fragment() {
             findNavController().navigateUp()
         }
         binding.etSalary.setOnKeyListener(onKeyListener())
+        binding.ilSalary.setEndIconOnClickListener {
+            binding.etSalary.setText("")
+            viewModel.setSalary(null)
+        }
+        binding.ilSalary.isEndIconVisible = false
+        binding.etSalary.doOnTextChanged { text, start, before, count ->
+            Log.v("FILTRATION", "on text changed |$text| ")
+            binding.ilSalary.isEndIconVisible = !text.isNullOrEmpty()
+        }
         binding.etAreaOfWork.setOnClickListener { onAreaClick.invoke() }
         binding.etIndustry.setOnClickListener { onIndustryClick.invoke() }
 

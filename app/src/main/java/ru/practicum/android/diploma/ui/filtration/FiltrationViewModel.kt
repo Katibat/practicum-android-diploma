@@ -1,5 +1,6 @@
 package ru.practicum.android.diploma.ui.filtration
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -40,7 +41,8 @@ class FiltrationViewModel(private val filtrationInteractor: FiltrationInteractor
         )
     }
 
-    fun setSalary(salary: String) {
+    fun setSalary(salary: String?) {
+        Log.v("FILTRATION", "salary $salary")
         _isChanged.value = true
         renderFiltration(
             Filtration(
