@@ -68,22 +68,6 @@ class RetrofitNetworkClient(
         }
     }
 
-    override suspend fun getCountries(): Result<List<AreaDTO>> {
-        if (!isConnected()) {
-            return Result.failure(ConnectException())
-        }
-        return withContext(Dispatchers.IO) {
-            try {
-                val countries = headHunterApi.getCountries()
-                Result.success(countries)
-            } catch (e: HttpException) {
-                Result.failure(e)
-            } catch (e: SocketTimeoutException) {
-                Result.failure(e)
-            } as Result<List<AreaDTO>>
-        }
-    }
-
     private suspend fun doVacancyDetailsRequest(vacancyId: String): Response {
         try {
             val response =

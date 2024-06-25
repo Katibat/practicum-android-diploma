@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.flow
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.data.dto.CountriesRequest
 import ru.practicum.android.diploma.data.dto.CountriesResponse
-import ru.practicum.android.diploma.data.dto.DTOConverters
+import ru.practicum.android.diploma.data.db.converters.CountryDtoConverters
 import ru.practicum.android.diploma.data.network.NetworkClient
 import ru.practicum.android.diploma.domain.api.country.CountryRepository
 import ru.practicum.android.diploma.domain.models.Country
@@ -13,7 +13,7 @@ import ru.practicum.android.diploma.util.SearchResultData
 
 class CountryRepositoryImpl(
     private val networkClient: NetworkClient,
-    private val converter: DTOConverters
+    private val converter: CountryDtoConverters
 ) : CountryRepository {
     override suspend fun getCountries(): Flow<SearchResultData<List<Country>>> = flow {
         val response = networkClient.doRequest(CountriesRequest())
