@@ -13,6 +13,7 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
@@ -42,17 +43,23 @@ class FiltrationFragment : Fragment() {
             render(it)
         }
         viewModel.getFiltrationFromPrefs()
-        var industry = getIndustry()
-        if (industry != null) viewModel.setIndustry(industry)
-        val country = getCountry()
-        val region = getRegion()
-        if (country != null) {
-            val resultCountry = if (region != null) {
-                Country(country.id, country.name, listOf(region))
-            } else {
-                Country(country.id, country.name, listOf())
+        setFragmentResultListener(INDUSTRY_RESULT_KEY) { requestKey, bundle ->
+            var industry = getIndustry(bundle)
+            if (industry != null) viewModel.setIndustry(industry)
+            Log.v("FILTRATION", "fragment view created after set industry from bundle $industry")
+        }
+        setFragmentResultListener(REGI0N_RESULT_KEY) { requestKey, bundle ->
+            val country = getCountry(bundle)
+            val region = getRegion(bundle)
+            if (country != null) {
+                val resultCountry = if (region != null) {
+                    Country(country.id, country.name, listOf(region))
+                } else {
+                    Country(country.id, country.name, listOf())
+                }
+                viewModel.setArea(resultCountry)
             }
-            viewModel.setArea(resultCountry)
+            Log.v("FILTRATION", "fragment view created after set area from bundle $country")
         }
         binding.checkBoxSalary.setOnClickListener {
             viewModel.setCheckbox(binding.checkBoxSalary.isChecked)
@@ -76,21 +83,17 @@ class FiltrationFragment : Fragment() {
         }
         binding.ilSalary.isEndIconVisible = false
         binding.etSalary.doOnTextChanged { text, start, before, count ->
-            Log.v("FILTRATION", "on text changed |$text| ")
             binding.ilSalary.isEndIconVisible = !text.isNullOrEmpty()
         }
         binding.etAreaOfWork.setOnClickListener { onAreaClick.invoke() }
         binding.etIndustry.setOnClickListener { onIndustryClick.invoke() }
-
     }
 
     private fun render(filtration: Filtration) {
         binding.apply {
             showArea(filtration.area)
             showIndustry(filtration.industry)
-            if (!filtration.salary.isNullOrEmpty()) {
-                etSalary.setText(filtration.salary)
-            }
+            etSalary.setText(filtration.salary)
             checkBoxSalary.isChecked = filtration.onlyWithSalary
             buttonRemove.isVisible = true
             val checkEmpty =
@@ -142,7 +145,6 @@ class FiltrationFragment : Fragment() {
 
     private fun industryEndIconListener() {
         binding.apply {
-            etIndustry.setText("")
             ilIndustry.clearOnEndIconChangedListeners()
             ilIndustry.setEndIconDrawable(R.drawable.arrow_forward)
             etIndustry.setOnClickListener { onIndustryClick.invoke() }
@@ -152,7 +154,6 @@ class FiltrationFragment : Fragment() {
 
     private fun areaEndIconListener() {
         binding.apply {
-            etAreaOfWork.setText("")
             ilAreaOfWork.clearOnEndIconChangedListeners()
             ilAreaOfWork.setEndIconDrawable(R.drawable.arrow_forward)
             etAreaOfWork.setOnClickListener { onAreaClick.invoke() }
@@ -182,22 +183,22 @@ class FiltrationFragment : Fragment() {
         findNavController().navigate(R.id.action_filtrationFragment_to_industryFragment, bundle)
     }
 
-    private fun getRegion(): Region? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        arguments?.getParcelable(SELECTED_REGION_KEY, Region::class.java)
+    private fun getRegion(bundle: Bundle): Region? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        bundle.getParcelable(SELECTED_REGION_KEY, Region::class.java)
     } else {
-        arguments?.getParcelable(SELECTED_REGION_KEY)
+        bundle.getParcelable(SELECTED_REGION_KEY)
     }
 
-    private fun getCountry(): Country? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        arguments?.getParcelable(SELECTED_COUNTRY_KEY, Country::class.java)
+    private fun getCountry(bundle: Bundle): Country? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        bundle.getParcelable(SELECTED_COUNTRY_KEY, Country::class.java)
     } else {
-        arguments?.getParcelable(SELECTED_COUNTRY_KEY)
+        bundle.getParcelable(SELECTED_COUNTRY_KEY)
     }
 
-    private fun getIndustry(): Industry? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        arguments?.getParcelable(SELECTED_INDUSTRY_KEY, Industry::class.java)
+    private fun getIndustry(bundle: Bundle): Industry? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        bundle.getParcelable(SELECTED_INDUSTRY_KEY, Industry::class.java)
     } else {
-        arguments?.getParcelable(SELECTED_INDUSTRY_KEY)
+        bundle.getParcelable(SELECTED_INDUSTRY_KEY)
     }
 
     private fun onKeyListener(): View.OnKeyListener? {
@@ -231,6 +232,8 @@ class FiltrationFragment : Fragment() {
     }
 
     companion object {
+        private const val REGI0N_RESULT_KEY = "regionResult"
+        private const val INDUSTRY_RESULT_KEY = "industryResult"
         private const val FRAGMENT_RESULT_KEY = "fragmentResult"
         private const val IS_APPLY_KEY = "isApply"
         private const val SELECTED_COUNTRY_KEY = "selectedCountry"

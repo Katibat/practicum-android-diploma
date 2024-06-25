@@ -5,12 +5,14 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -64,7 +66,9 @@ class IndustryFragment : Fragment() {
             val bundle = Bundle().apply {
                 putParcelable(SELECTED_INDUSTRY_KEY, selectedIndustry)
             }
-            findNavController().navigate(R.id.action_industryFragment_to_filtrationFragment, bundle)
+            Log.v("FILTRATION", "industry back $bundle")
+            setFragmentResult(INDUSTRY_RESULT_KEY, bundle)
+            findNavController().navigateUp()
         }
 
         binding.ivClear.setOnClickListener {
@@ -230,6 +234,7 @@ class IndustryFragment : Fragment() {
     }
 
     companion object {
+        private const val INDUSTRY_RESULT_KEY = "industryResult"
         const val SELECTED_INDUSTRY_KEY = "selectedIndustry"
     }
 }

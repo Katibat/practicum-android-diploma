@@ -9,7 +9,7 @@ import ru.practicum.android.diploma.domain.models.Filtration
 import ru.practicum.android.diploma.domain.models.Industry
 
 class FiltrationViewModel(private val filtrationInteractor: FiltrationInteractor) : ViewModel() {
-    private val _filtration = MutableLiveData<Filtration>()
+    private val _filtration = MutableLiveData<Filtration>(Filtration(null, null, null, false))
     val filtration: LiveData<Filtration> get() = _filtration
     private val _isChanged = MutableLiveData<Boolean>(false)
     val isChanged: LiveData<Boolean> get() = _isChanged
@@ -19,7 +19,8 @@ class FiltrationViewModel(private val filtrationInteractor: FiltrationInteractor
     }
 
     fun getFiltrationFromPrefs() {
-        renderFiltration(filtrationInteractor.getFiltration())
+        val t = filtrationInteractor.getFiltration()
+        renderFiltration(t)
     }
 
     fun setCheckbox(onlyWithSalary: Boolean) {
