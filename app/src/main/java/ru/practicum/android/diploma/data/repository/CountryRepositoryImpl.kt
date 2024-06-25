@@ -28,6 +28,10 @@ class CountryRepositoryImpl(
                 }
             }
 
+            NO_INTERNET_RESULT_CODE -> {
+                emit(SearchResultData.NoConnection(R.string.search_no_connection))
+            }
+
             else -> {
                 emit(SearchResultData.Error(R.string.search_server_error))
             }
@@ -36,5 +40,6 @@ class CountryRepositoryImpl(
 
     companion object {
         const val CLIENT_SUCCESS_RESULT_CODE = 200
+        const val NO_INTERNET_RESULT_CODE = -1
     }
 }
