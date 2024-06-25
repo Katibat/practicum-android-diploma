@@ -1,11 +1,13 @@
-package ru.practicum.android.diploma.data.dto
+package ru.practicum.android.diploma.data.db.converters
 
+import ru.practicum.android.diploma.data.dto.AreaDTO
+import ru.practicum.android.diploma.data.dto.CurrencyDTO
 import ru.practicum.android.diploma.domain.models.City
 import ru.practicum.android.diploma.domain.models.Country
 import ru.practicum.android.diploma.domain.models.Currency
 import ru.practicum.android.diploma.domain.models.Region
 
-class DTOConverters {
+class CountryDtoConverters {
 
     fun map(currencyDTO: CurrencyDTO): Currency = Currency(
         code = currencyDTO.code,
