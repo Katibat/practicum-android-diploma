@@ -34,6 +34,19 @@ class SearchFragment : Fragment() {
     private val viewModel by viewModel<SearchViewModel>()
     private val toolbar by lazy { (requireActivity() as RootActivity).toolbar }
     private var _adapter: VacancyAdapter? = null
+    private var onScrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+            if (dy > 0) {
+                val pos =
+                    (binding.rvSearch.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+                val itemsCount = _adapter?.itemCount ?: 0
+                if (pos >= itemsCount - 1 || pos != RecyclerView.NO_POSITION) {
+                    viewModel.onLastItemReached()
+                }
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -64,19 +77,7 @@ class SearchFragment : Fragment() {
         })
         binding.rvSearch.adapter = _adapter
         binding.rvSearch.layoutManager = LinearLayoutManager(context)
-        binding.rvSearch.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (dy > 0) {
-                    val pos =
-                        (binding.rvSearch.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
-                    val itemsCount = _adapter?.itemCount ?: 0
-                    if (pos >= itemsCount - 1 || pos != RecyclerView.NO_POSITION) {
-                        viewModel.onLastItemReached()
-                    }
-                }
-            }
-        })
+        binding.rvSearch.addOnScrollListener(onScrollListener)
         binding.etButtonSearch.doOnTextChanged { text, _, _, _ ->
             hideIconEditText(text)
             if (binding.etButtonSearch.hasFocus()) {

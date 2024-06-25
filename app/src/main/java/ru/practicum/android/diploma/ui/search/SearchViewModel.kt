@@ -37,16 +37,7 @@ class SearchViewModel(
     val nextPageError: LiveData<Boolean> get() = _nextPageError
     private val _filtration = MutableLiveData<Filtration?>(null)
     val filtration: LiveData<Filtration?> get() = _filtration
-
-    private fun search(request: String, options: HashMap<String, String>) {
-        if (request.isNullOrEmpty()) {
-            renderState(SearchState.Default)
-        } else {
-            renderState(SearchState.Loading)
-            currPage = null
-            vacancySearchDebounce(Pair(request, options))
-        }
-    }
+    private var filtrationOptions: HashMap<String, String> = hashMapOf()
 
     private fun renderState(state: SearchState) {
         _stateSearch.postValue(state)
@@ -64,6 +55,7 @@ class SearchViewModel(
                 currPage = currPage!! + 1
                 val t = hashMapOf<String, String>()
                 t.put(PAGE, "$currPage")
+                t.putAll(filtrationOptions)
                 vacancySearchDebounce(Pair(lastSearchQueryText ?: "", t))
             }
         }
@@ -72,9 +64,6 @@ class SearchViewModel(
     private fun searchVacancies(request: String, options: HashMap<String, String>) {
         viewModelScope.launch {
             options[TEXT] = request
-            if (filtration.value != null) {
-                options.putAll(convertFiltrationToOptions(filtration.value!!))
-            }
             val currencyDictionary = dictionaryInteractor.getCurrencyDictionary()
             searchInteractor.searchVacancies(options).collect { result ->
                 _newPageLoading.postValue(false)
@@ -143,7 +132,17 @@ class SearchViewModel(
     fun searchDebounce(changedText: String, isApply: Boolean) {
         if (lastSearchQueryText == changedText && !isApply) return
         this.lastSearchQueryText = changedText
-        search(changedText, hashMapOf())
+        filtrationOptions = hashMapOf()
+        if (filtration.value != null) {
+            filtrationOptions.putAll(convertFiltrationToOptions(filtration.value!!))
+        }
+        if (lastSearchQueryText.isNullOrEmpty()) {
+            renderState(SearchState.Default)
+        } else {
+            renderState(SearchState.Loading)
+            currPage = null
+            vacancySearchDebounce(Pair(lastSearchQueryText!!, filtrationOptions))
+        }
         currPage = 0
     }
 
