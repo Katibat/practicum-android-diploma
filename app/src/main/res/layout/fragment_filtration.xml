@@ -82,7 +82,7 @@
         app:boxStrokeWidth="0dp"
         app:boxStrokeWidthFocused="0dp"
         app:endIconDrawable="@drawable/clean_icon"
-        app:endIconMode="clear_text"
+        app:endIconMode="custom"
         app:endIconTint="@color/blackUniversal"
         app:endIconContentDescription="true"
         app:expandedHintEnabled="false"
