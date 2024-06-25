@@ -148,7 +148,7 @@ class SearchViewModel(
 
     fun updateFiltration() {
         val newFiltration = filtrationInteractor.getFiltration()
-        _filtration.postValue(newFiltration)
+        _filtration.value = newFiltration
     }
 
     private fun convertFiltrationToOptions(filtrationParams: Filtration): HashMap<String, String> {
