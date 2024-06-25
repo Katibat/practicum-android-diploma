@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
@@ -110,7 +111,8 @@ class LocationFragment : Fragment() {
                     putParcelable(SELECTED_REGION_KEY, viewModel.selectedRegion.value)
                 }
             }
-            findNavController().navigate(R.id.action_locationFragment_to_filtrationFragment, bundle)
+            setFragmentResult(REGI0N_RESULT_KEY, bundle)
+            findNavController().navigateUp()
         }
     }
 
@@ -167,5 +169,6 @@ class LocationFragment : Fragment() {
     companion object {
         private const val SELECTED_COUNTRY_KEY = "selectedCountry"
         private const val SELECTED_REGION_KEY = "selectedRegion"
+        private const val REGI0N_RESULT_KEY = "regionResult"
     }
 }
