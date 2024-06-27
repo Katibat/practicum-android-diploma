@@ -64,6 +64,7 @@ class IndustryViewModel(private val interactor: IndustryInteractor) : ViewModel(
     }
 
     fun saveSelectIndustry(industry: Industry) {
+        renderState(IndustryState.isSelected)
         _selectIndustry.postValue(industry)
     }
 

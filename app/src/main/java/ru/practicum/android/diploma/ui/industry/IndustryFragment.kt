@@ -30,7 +30,6 @@ class IndustryFragment : Fragment() {
         selectedIndustry = industry
         viewModel.saveSelectIndustry(industry)
         hideKeyboard()
-        viewModel.saveSelectIndustry(industry)
     }
 
     private val toolbar by lazy { (requireActivity() as RootActivity).toolbar }
@@ -91,6 +90,7 @@ class IndustryFragment : Fragment() {
     private fun selectIndustry(industry: Industry?) {
         if (industry != null) {
             selectedIndustry = industry
+            hideKeyboard()
             viewModel.saveSelectIndustry(industry)
             adapter.selectedIndustry = industry
             adapter.notifyDataSetChanged()
@@ -101,6 +101,7 @@ class IndustryFragment : Fragment() {
         when (state) {
             is IndustryState.Loading -> renderLoading()
             is IndustryState.NotFound -> renderNotFound()
+            is IndustryState.isSelected -> renderSelected(selectedIndustry)
             is IndustryState.ServerError -> renderServerError()
             is IndustryState.NoConnection -> renderNoConnection()
             is IndustryState.Content -> {
@@ -203,10 +204,14 @@ class IndustryFragment : Fragment() {
     }
 
     private fun hideKeyboard() {
+        val view = requireActivity().currentFocus
         val inputMethodManager =
             requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-        inputMethodManager?.hideSoftInputFromWindow(binding.etSelectIndustry.windowToken, 0)
-        binding.etSelectIndustry.isEnabled = true
+        if (view != null) {
+            inputMethodManager?.hideSoftInputFromWindow(binding.etSelectIndustry.windowToken, 0)
+            binding.etSelectIndustry.isEnabled = true
+        }
+        view?.clearFocus()
     }
 
     override fun onStop() {
