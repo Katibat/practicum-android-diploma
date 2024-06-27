@@ -71,7 +71,7 @@ class VacancyDetailsFragment : Fragment() {
             is VacancyDetailsState.NotInDb -> renderNotInDb()
             is VacancyDetailsState.Content -> {
                 showContent(state.vacancy, state.currencySymbol)
-                binding.apply {
+                with(binding) {
                     progressBar.isVisible = false
                     nsvDetailsContent.isVisible = true
                     binding.progressBar.isVisible = false
@@ -86,7 +86,7 @@ class VacancyDetailsFragment : Fragment() {
     }
 
     private fun renderError() {
-        binding.apply {
+        with(binding) {
             ivPlaceholder.isVisible = true
             tvPlaceholder.isVisible = true
             ivPlaceholder.setImageResource(R.drawable.server_error_cat)
@@ -96,14 +96,14 @@ class VacancyDetailsFragment : Fragment() {
     }
 
     private fun renderLoading() {
-        binding.apply {
+        with(binding) {
             nsvDetailsContent.isVisible = false
             progressBar.isVisible = true
         }
     }
 
     private fun renderNotInDb() {
-        binding.apply {
+        with(binding) {
             ivPlaceholder.setImageResource(R.drawable.no_internet_scull)
             tvPlaceholder.setText(R.string.search_no_connection)
             ivPlaceholder.isVisible = true

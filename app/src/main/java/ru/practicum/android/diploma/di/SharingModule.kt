@@ -8,5 +8,5 @@ import ru.practicum.android.diploma.domain.impl.sharing.SharingInteractorImpl
 
 val sharingModule = module {
     single<ExternalNavigator> { ExternalNavigatorImpl(get()) }
-    single<SharingInteractor> { SharingInteractorImpl(get()) }
+    factory<SharingInteractor> { SharingInteractorImpl(get()) }
 }

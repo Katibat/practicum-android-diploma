@@ -39,6 +39,4 @@ interface HeadHunterApi {
     @GET("areas")
     suspend fun getCountries(): Response<List<AreaDTO>>
 
-    @GET("areas/{parent_id}")
-    suspend fun getRegions(@Path("parent_id") parentId: String?): List<AreaDTO>
 }

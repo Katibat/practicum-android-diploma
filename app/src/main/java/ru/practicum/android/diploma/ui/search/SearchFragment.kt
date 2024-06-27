@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,6 +34,19 @@ class SearchFragment : Fragment() {
     private val viewModel by viewModel<SearchViewModel>()
     private val toolbar by lazy { (requireActivity() as RootActivity).toolbar }
     private var _adapter: VacancyAdapter? = null
+    private var onScrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+            if (dy > 0) {
+                val pos =
+                    (binding.rvSearch.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+                val itemsCount = _adapter?.itemCount ?: 0
+                if (pos >= itemsCount - 1 && pos != RecyclerView.NO_POSITION) {
+                    viewModel.onLastItemReached()
+                }
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -63,24 +77,12 @@ class SearchFragment : Fragment() {
         })
         binding.rvSearch.adapter = _adapter
         binding.rvSearch.layoutManager = LinearLayoutManager(context)
-        binding.rvSearch.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (dy > 0) {
-                    val pos =
-                        (binding.rvSearch.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
-                    val itemsCount = _adapter?.itemCount ?: 0
-                    if (pos >= itemsCount - 1) {
-                        viewModel.onLastItemReached()
-                    }
-                }
-            }
-        })
+        binding.rvSearch.addOnScrollListener(onScrollListener)
         binding.etButtonSearch.doOnTextChanged { text, _, _, _ ->
             hideIconEditText(text)
             if (binding.etButtonSearch.hasFocus()) {
-                _adapter!!.vacancyList.clear()
-                viewModel.searchDebounce(text.toString())
+                _adapter?.vacancyList?.clear()
+                viewModel.searchDebounce(text.toString(), false)
             }
         }
 
@@ -94,6 +96,16 @@ class SearchFragment : Fragment() {
         }
         viewModel.nextPageError.observe(viewLifecycleOwner) {
             renderNewPageError(it)
+        }
+        viewModel.filtration.observe(viewLifecycleOwner) {
+            setFiltrationIcon(it != null)
+        }
+        viewModel.updateFiltration()
+        setFragmentResultListener(FRAGMENT_RESULT_KEY) { requestKey, bundle ->
+            val isApply = bundle.getBoolean(IS_APPLY_KEY)
+            if (isApply) {
+                viewModel.searchDebounce(binding.etButtonSearch.text.toString(), isApply)
+            }
         }
     }
 
@@ -240,10 +252,18 @@ class SearchFragment : Fragment() {
         }
     }
 
+    private fun setFiltrationIcon(hasFiltration: Boolean) {
+        if (hasFiltration) {
+            toolbar.menu.findItem(R.id.filters).setIcon(R.drawable.filter_on)
+        } else {
+            toolbar.menu.findItem(R.id.filters).setIcon(R.drawable.filter_off)
+        }
+    }
+
     private fun openFragmentVacancy(vacancyId: String) {
         findNavController().navigate(
             R.id.action_searchFragment_to_vacanciesFragment,
-            Bundle().apply { putString("vacancy_model", vacancyId) }
+            Bundle().apply { putString(VACANCY_ID, vacancyId) }
         )
     }
 
@@ -295,5 +315,11 @@ class SearchFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        internal const val VACANCY_ID = "vacancy_model"
+        private const val FRAGMENT_RESULT_KEY = "fragmentResult"
+        private const val IS_APPLY_KEY = "isApply"
     }
 }

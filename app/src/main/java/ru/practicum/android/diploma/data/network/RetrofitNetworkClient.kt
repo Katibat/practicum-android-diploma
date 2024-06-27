@@ -77,6 +77,9 @@ class RetrofitNetworkClient(
         } catch (e: IOException) {
             Log.e(NETWORK_ERROR, e.toString())
             return VacancyDetailsResponse(null).apply { resultCode = CLIENT_ERROR_RESULT_CODE }
+        } catch (e: HttpException) {
+            Log.e(NETWORK_ERROR, e.toString())
+            return VacancyDetailsResponse(null).apply { resultCode = CLIENT_ERROR_RESULT_CODE }
         }
     }
 
@@ -86,6 +89,9 @@ class RetrofitNetworkClient(
                 headHunterApi.getCurrencies(BEARER_TOKEN)
             return response.apply { resultCode = CLIENT_SUCCESS_RESULT_CODE }
         } catch (e: IOException) {
+            Log.e(NETWORK_ERROR, e.toString())
+            return CurrencyResponse(null).apply { resultCode = CLIENT_ERROR_RESULT_CODE }
+        } catch (e: HttpException) {
             Log.e(NETWORK_ERROR, e.toString())
             return CurrencyResponse(null).apply { resultCode = CLIENT_ERROR_RESULT_CODE }
         }
@@ -104,6 +110,9 @@ class RetrofitNetworkClient(
         } catch (e: IOException) {
             Log.e(NETWORK_ERROR, e.toString())
             return SearchResponse(null, 0, 0, 0).apply { resultCode = CLIENT_ERROR_RESULT_CODE }
+        } catch (e: HttpException) {
+            Log.e(NETWORK_ERROR, e.toString())
+            return SearchResponse(null, 0, 0, 0).apply { resultCode = CLIENT_ERROR_RESULT_CODE }
         }
     }
 
@@ -117,6 +126,9 @@ class RetrofitNetworkClient(
         } catch (e: IOException) {
             Log.e(NETWORK_ERROR, e.toString())
             return IndustryResponse().apply { resultCode = CLIENT_ERROR_RESULT_CODE }
+        } catch (e: HttpException) {
+            Log.e(NETWORK_ERROR, e.toString())
+            return IndustryResponse().apply { resultCode = CLIENT_ERROR_RESULT_CODE }
         }
     }
 
@@ -126,6 +138,9 @@ class RetrofitNetworkClient(
             return CountriesResponse(countries.body()).apply {
                 resultCode = CLIENT_SUCCESS_RESULT_CODE
             }
+        } catch (e: IOException) {
+            Log.e(NETWORK_ERROR, e.toString())
+            return CountriesResponse(listOf()).apply { resultCode = CLIENT_ERROR_RESULT_CODE }
         } catch (e: HttpException) {
             Log.e(NETWORK_ERROR, e.toString())
             return CountriesResponse(listOf()).apply { resultCode = CLIENT_ERROR_RESULT_CODE }
