@@ -219,6 +219,7 @@ class FiltrationFragment : Fragment() {
 
     private val textWatcher = object : TextWatcher {
         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            // Empty
         }
 
         override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -228,6 +229,7 @@ class FiltrationFragment : Fragment() {
         }
 
         override fun afterTextChanged(p0: Editable?) {
+            // Empty
         }
 
     }
