@@ -1,14 +1,13 @@
 package ru.practicum.android.diploma.ui.filtration
 
-import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
@@ -76,9 +75,8 @@ class FiltrationFragment : Fragment() {
             setFragmentResult(FRAGMENT_RESULT_KEY, args)
             findNavController().navigateUp()
         }
-        binding.etSalary.setOnKeyListener(onKeyListener())
+        binding.etSalary.addTextChangedListener(textWatcher)
         binding.ilSalary.setEndIconOnClickListener {
-            binding.etSalary.setText("")
             viewModel.setSalary(null)
         }
         binding.ilSalary.isEndIconVisible = false
@@ -93,12 +91,30 @@ class FiltrationFragment : Fragment() {
         binding.apply {
             showArea(filtration.area)
             showIndustry(filtration.industry)
-            etSalary.setText(filtration.salary)
+            binding.etSalary.removeTextChangedListener(textWatcher)
+            renderSalary(filtration.salary)
+            binding.etSalary.addTextChangedListener(textWatcher)
             checkBoxSalary.isChecked = filtration.onlyWithSalary
             buttonRemove.isVisible = true
             val checkEmpty =
                 filtration.salary.isNullOrEmpty() && filtration.industry == null && filtration.area == null
             buttonRemove.isVisible = !(checkEmpty && !filtration.onlyWithSalary)
+        }
+    }
+
+    private fun renderSalary(salary: String?) {
+        val currentSelection = binding.etSalary.selectionEnd
+        binding.etSalary.setText(salary)
+        if (binding.etSalary.hasFocus()) {
+            if (salary.isNullOrEmpty()) {
+                binding.etSalary.setSelection(0)
+            } else {
+                if (currentSelection > 0 && currentSelection < salary.length) {
+                    binding.etSalary.setSelection(currentSelection)
+                } else {
+                    binding.etSalary.setSelection(salary.length)
+                }
+            }
         }
     }
 
@@ -201,18 +217,21 @@ class FiltrationFragment : Fragment() {
         bundle.getParcelable(SELECTED_INDUSTRY_KEY)
     }
 
-    private fun onKeyListener(): View.OnKeyListener? {
-        return View.OnKeyListener { view, keyCode, keyEvent ->
-            if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                val inputMethodManager =
-                    requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-                inputMethodManager?.hideSoftInputFromWindow(binding.etSalary.windowToken, 0)
-                viewModel.setSalary(binding.etSalary.text.toString())
-                true
-            } else {
-                false
+    private val textWatcher = object : TextWatcher {
+        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            // Empty
+        }
+
+        override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            if (!s.isNullOrEmpty()) {
+                viewModel.setSalary(s.toString())
             }
         }
+
+        override fun afterTextChanged(p0: Editable?) {
+            // Empty
+        }
+
     }
 
     private fun toolbarSetup() {

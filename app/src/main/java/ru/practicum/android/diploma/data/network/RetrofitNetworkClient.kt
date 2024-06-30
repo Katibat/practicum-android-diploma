@@ -6,6 +6,7 @@ import android.net.NetworkCapabilities
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 import ru.practicum.android.diploma.BuildConfig
 import ru.practicum.android.diploma.data.dto.CountriesRequest
 import ru.practicum.android.diploma.data.dto.CountriesResponse
@@ -76,6 +77,9 @@ class RetrofitNetworkClient(
         } catch (e: IOException) {
             Log.e(NETWORK_ERROR, e.toString())
             return VacancyDetailsResponse(null).apply { resultCode = CLIENT_ERROR_RESULT_CODE }
+        } catch (e: HttpException) {
+            Log.e(NETWORK_ERROR, e.toString())
+            return VacancyDetailsResponse(null).apply { resultCode = CLIENT_ERROR_RESULT_CODE }
         }
     }
 
@@ -85,6 +89,9 @@ class RetrofitNetworkClient(
                 headHunterApi.getCurrencies(BEARER_TOKEN)
             return response.apply { resultCode = CLIENT_SUCCESS_RESULT_CODE }
         } catch (e: IOException) {
+            Log.e(NETWORK_ERROR, e.toString())
+            return CurrencyResponse(null).apply { resultCode = CLIENT_ERROR_RESULT_CODE }
+        } catch (e: HttpException) {
             Log.e(NETWORK_ERROR, e.toString())
             return CurrencyResponse(null).apply { resultCode = CLIENT_ERROR_RESULT_CODE }
         }
@@ -103,6 +110,9 @@ class RetrofitNetworkClient(
         } catch (e: IOException) {
             Log.e(NETWORK_ERROR, e.toString())
             return SearchResponse(null, 0, 0, 0).apply { resultCode = CLIENT_ERROR_RESULT_CODE }
+        } catch (e: HttpException) {
+            Log.e(NETWORK_ERROR, e.toString())
+            return SearchResponse(null, 0, 0, 0).apply { resultCode = CLIENT_ERROR_RESULT_CODE }
         }
     }
 
@@ -116,6 +126,9 @@ class RetrofitNetworkClient(
         } catch (e: IOException) {
             Log.e(NETWORK_ERROR, e.toString())
             return IndustryResponse().apply { resultCode = CLIENT_ERROR_RESULT_CODE }
+        } catch (e: HttpException) {
+            Log.e(NETWORK_ERROR, e.toString())
+            return IndustryResponse().apply { resultCode = CLIENT_ERROR_RESULT_CODE }
         }
     }
 
@@ -126,6 +139,9 @@ class RetrofitNetworkClient(
                 resultCode = CLIENT_SUCCESS_RESULT_CODE
             }
         } catch (e: IOException) {
+            Log.e(NETWORK_ERROR, e.toString())
+            return CountriesResponse(listOf()).apply { resultCode = CLIENT_ERROR_RESULT_CODE }
+        } catch (e: HttpException) {
             Log.e(NETWORK_ERROR, e.toString())
             return CountriesResponse(listOf()).apply { resultCode = CLIENT_ERROR_RESULT_CODE }
         }
