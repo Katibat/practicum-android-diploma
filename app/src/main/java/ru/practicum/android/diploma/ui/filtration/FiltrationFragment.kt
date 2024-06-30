@@ -129,7 +129,7 @@ class FiltrationFragment : Fragment() {
                     area.name
                 }
                 etAreaOfWork.setText(text)
-                ilAreaOfWork.requestFocus()
+                ilAreaOfWork.isActivated = true
                 ilAreaOfWork.setEndIconDrawable(R.drawable.clean_icon)
                 ilAreaOfWork.setEndIconOnClickListener {
                     viewModel.setArea(null)
@@ -137,7 +137,7 @@ class FiltrationFragment : Fragment() {
                 }
             } else {
                 etAreaOfWork.setText("")
-                ilAreaOfWork.clearFocus()
+                ilAreaOfWork.isActivated = false
                 areaEndIconListener()
             }
         }
@@ -147,7 +147,7 @@ class FiltrationFragment : Fragment() {
         with(binding) {
             if (industry != null) {
                 etIndustry.setText(industry.name)
-                ilIndustry.requestFocus()
+                ilIndustry.isActivated = true
                 ilIndustry.setEndIconDrawable(R.drawable.clean_icon)
                 ilIndustry.setEndIconOnClickListener {
                     viewModel.setIndustry(null)
@@ -155,7 +155,7 @@ class FiltrationFragment : Fragment() {
                 }
             } else {
                 etIndustry.setText("")
-                ilIndustry.clearFocus()
+                ilIndustry.isActivated = false
                 industryEndIconListener()
             }
         }
