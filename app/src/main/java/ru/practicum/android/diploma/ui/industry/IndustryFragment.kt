@@ -51,7 +51,7 @@ class IndustryFragment : Fragment() {
         }
 
         viewModel.selectIndustry.observe(viewLifecycleOwner) {
-            renderSelected(it)
+            renderSelected()
         }
 
         binding.rvIndustry.layoutManager = LinearLayoutManager(requireContext())
@@ -90,10 +90,13 @@ class IndustryFragment : Fragment() {
     private fun selectIndustry(industry: Industry?) {
         if (industry != null) {
             selectedIndustry = industry
+            binding.buttonSelectIndustry.isVisible = true
             hideKeyboard()
             viewModel.saveSelectIndustry(industry)
             adapter.selectedIndustry = industry
             adapter.notifyDataSetChanged()
+        } else {
+            binding.buttonSelectIndustry.isVisible = false
         }
     }
 
@@ -101,7 +104,6 @@ class IndustryFragment : Fragment() {
         when (state) {
             is IndustryState.Loading -> renderLoading()
             is IndustryState.NotFound -> renderNotFound()
-            is IndustryState.isSelected -> renderSelected(selectedIndustry)
             is IndustryState.ServerError -> renderServerError()
             is IndustryState.NoConnection -> renderNoConnection()
             is IndustryState.Content -> {
@@ -136,12 +138,10 @@ class IndustryFragment : Fragment() {
         }
     }
 
-    private fun renderSelected(industry: Industry?) {
-        if (industry != null) {
-            with(binding) {
-                buttonSelectIndustry.isVisible = true
-                progressBar.isVisible = false
-            }
+    private fun renderSelected() {
+        with(binding) {
+            buttonSelectIndustry.isVisible = true
+            progressBar.isVisible = false
         }
     }
 
@@ -157,7 +157,6 @@ class IndustryFragment : Fragment() {
         with(binding) {
             rvIndustry.isVisible = true
             progressBar.isVisible = false
-            buttonSelectIndustry.isVisible = false
             ivPlaceholder.isVisible = false
             tvPlaceholder.isVisible = false
         }
