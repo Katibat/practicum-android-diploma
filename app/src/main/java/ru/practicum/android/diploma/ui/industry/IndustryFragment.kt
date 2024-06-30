@@ -77,6 +77,7 @@ class IndustryFragment : Fragment() {
             }
             adapter.industries.clear()
             adapter.selectedIndustry = null
+            selectedIndustry = null
             adapter.notifyDataSetChanged()
         }
     }
@@ -90,9 +91,9 @@ class IndustryFragment : Fragment() {
     private fun selectIndustry(industry: Industry?) {
         if (industry != null) {
             selectedIndustry = industry
+            viewModel.saveSelectIndustry(industry)
             binding.buttonSelectIndustry.isVisible = true
             hideKeyboard()
-            viewModel.saveSelectIndustry(industry)
             adapter.selectedIndustry = industry
             adapter.notifyDataSetChanged()
         } else {
@@ -123,6 +124,7 @@ class IndustryFragment : Fragment() {
     private fun renderLoading() {
         with(binding) {
             progressBar.isVisible = true
+            buttonSelectIndustry.isVisible = false
         }
     }
 
