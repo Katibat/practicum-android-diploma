@@ -63,9 +63,6 @@ class FiltrationFragment : Fragment() {
         binding.checkBoxSalary.setOnClickListener {
             viewModel.setCheckbox(binding.checkBoxSalary.isChecked)
         }
-        viewModel.isChanged.observe(viewLifecycleOwner) {
-            showSaveButton(it)
-        }
         binding.buttonRemove.setOnClickListener {
             viewModel.setEmpty()
         }
@@ -85,6 +82,11 @@ class FiltrationFragment : Fragment() {
         }
         binding.etAreaOfWork.setOnClickListener { onAreaClick.invoke() }
         binding.etIndustry.setOnClickListener { onIndustryClick.invoke() }
+        viewModel.isChanged.observe(viewLifecycleOwner) {
+            val canShowButton = viewModel.isFiltrationChanged() && it
+            Log.v("FILTRATION", "fragment show button 1)${viewModel.isFiltrationChanged()} 2)${canShowButton} 3)${it}")
+            showSaveButton(canShowButton)
+        }
     }
 
     private fun render(filtration: Filtration) {
@@ -127,6 +129,7 @@ class FiltrationFragment : Fragment() {
                     area.name
                 }
                 etAreaOfWork.setText(text)
+                ilAreaOfWork.requestFocus()
                 ilAreaOfWork.setEndIconDrawable(R.drawable.clean_icon)
                 ilAreaOfWork.setEndIconOnClickListener {
                     viewModel.setArea(null)
@@ -134,6 +137,7 @@ class FiltrationFragment : Fragment() {
                 }
             } else {
                 etAreaOfWork.setText("")
+                ilAreaOfWork.clearFocus()
                 areaEndIconListener()
             }
         }
@@ -143,6 +147,7 @@ class FiltrationFragment : Fragment() {
         with(binding) {
             if (industry != null) {
                 etIndustry.setText(industry.name)
+                ilIndustry.requestFocus()
                 ilIndustry.setEndIconDrawable(R.drawable.clean_icon)
                 ilIndustry.setEndIconOnClickListener {
                     viewModel.setIndustry(null)
@@ -150,6 +155,7 @@ class FiltrationFragment : Fragment() {
                 }
             } else {
                 etIndustry.setText("")
+                ilIndustry.clearFocus()
                 industryEndIconListener()
             }
         }
