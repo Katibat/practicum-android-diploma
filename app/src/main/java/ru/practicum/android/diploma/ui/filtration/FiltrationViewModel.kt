@@ -1,6 +1,5 @@
 package ru.practicum.android.diploma.ui.filtration
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -83,7 +82,6 @@ class FiltrationViewModel(private val filtrationInteractor: FiltrationInteractor
     }
 
     fun isFiltrationChanged(): Boolean {
-        Log.v("FILTRATION", "view model is change loaded ${loadedFiltration} value${_filtration.value}")
         if (loadedFiltration == null) return false
         if (_filtration.value == null) return true
         return _filtration.value != loadedFiltration

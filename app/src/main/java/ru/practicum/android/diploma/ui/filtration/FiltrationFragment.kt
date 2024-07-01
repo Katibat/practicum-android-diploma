@@ -45,7 +45,6 @@ class FiltrationFragment : Fragment() {
         setFragmentResultListener(INDUSTRY_RESULT_KEY) { requestKey, bundle ->
             var industry = getIndustry(bundle)
             if (industry != null) viewModel.setIndustry(industry)
-            Log.v("FILTRATION", "fragment view created after set industry from bundle $industry")
         }
         setFragmentResultListener(REGI0N_RESULT_KEY) { requestKey, bundle ->
             val country = getCountry(bundle)
@@ -84,7 +83,6 @@ class FiltrationFragment : Fragment() {
         binding.etIndustry.setOnClickListener { onIndustryClick.invoke() }
         viewModel.isChanged.observe(viewLifecycleOwner) {
             val canShowButton = viewModel.isFiltrationChanged() && it
-            Log.v("FILTRATION", "fragment show button 1)${viewModel.isFiltrationChanged()} 2)${canShowButton} 3)${it}")
             showSaveButton(canShowButton)
         }
     }
