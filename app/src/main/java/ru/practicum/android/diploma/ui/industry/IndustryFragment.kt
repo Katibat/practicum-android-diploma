@@ -25,11 +25,7 @@ class IndustryFragment : Fragment() {
     private var _binding: FragmentIndustryBinding? = null
     private val binding get() = _binding!!
     private val viewModel by viewModel<IndustryViewModel>()
-    private var selectedIndustry: Industry? = null
     private val adapter = IndustryAdapter { industry ->
-        selectedIndustry = industry
-        viewModel.saveSelectIndustry(industry)
-        hideKeyboard()
         viewModel.saveSelectIndustry(industry)
     }
 
@@ -54,7 +50,7 @@ class IndustryFragment : Fragment() {
         viewModel.selectIndustry.observe(viewLifecycleOwner) {
             renderSelected(it)
         }
-
+        getIndustry()?.let { viewModel.saveSelectIndustry(it) }
         binding.rvIndustry.layoutManager = LinearLayoutManager(requireContext())
         binding.rvIndustry.adapter = adapter
 
@@ -64,7 +60,7 @@ class IndustryFragment : Fragment() {
 
         binding.buttonSelectIndustry.setOnClickListener {
             val bundle = Bundle().apply {
-                putParcelable(SELECTED_INDUSTRY_KEY, selectedIndustry)
+                putParcelable(SELECTED_INDUSTRY_KEY, viewModel.selectIndustry.value)
             }
             Log.v("FILTRATION", "industry back $bundle")
             setFragmentResult(INDUSTRY_RESULT_KEY, bundle)
@@ -90,7 +86,6 @@ class IndustryFragment : Fragment() {
 
     private fun selectIndustry(industry: Industry?) {
         if (industry != null) {
-            selectedIndustry = industry
             viewModel.saveSelectIndustry(industry)
             adapter.selectedIndustry = industry
             adapter.notifyDataSetChanged()
@@ -106,7 +101,7 @@ class IndustryFragment : Fragment() {
             is IndustryState.Content -> {
                 renderContent()
                 updateAdapterData(state.industries)
-                selectIndustry(getIndustry())
+                selectIndustry(viewModel.selectIndustry.value)
             }
         }
     }
@@ -120,6 +115,7 @@ class IndustryFragment : Fragment() {
     private fun renderLoading() {
         with(binding) {
             progressBar.isVisible = true
+            buttonSelectIndustry.isVisible = false
         }
     }
 
@@ -194,7 +190,6 @@ class IndustryFragment : Fragment() {
                 viewModel.searchDebounce(s.toString())
             } else {
                 binding.ivClear.setImageResource(R.drawable.search_icon)
-                hideKeyboard()
                 viewModel.fetchIndustries()
             }
         }

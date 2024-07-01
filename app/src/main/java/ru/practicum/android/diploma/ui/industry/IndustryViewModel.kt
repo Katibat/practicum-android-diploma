@@ -74,10 +74,7 @@ class IndustryViewModel(private val interactor: IndustryInteractor) : ViewModel(
     fun searchDebounce(changedText: String) {
         if (lastSearchQueryText == changedText) return
         this.lastSearchQueryText = changedText
-        viewModelScope.launch {
-            delay(SEARCH_DEBOUNCE_DELAY_MILLIS)
-            search(changedText)
-        }
+        search(changedText)
     }
 
     companion object {
