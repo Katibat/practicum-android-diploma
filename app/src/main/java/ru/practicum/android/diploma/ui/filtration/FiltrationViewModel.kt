@@ -1,7 +1,7 @@
-package ru.practicum.android.di
+package ru.practicum.android.diploma.ui.filtration
 
-ploma.ui.filtration
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,7 +15,7 @@ class FiltrationViewModel(private val filtrationInteractor: FiltrationInteractor
     val filtration: LiveData<Filtration> get() = _filtration
     private val _isChanged = MutableLiveData(false)
     val isChanged: LiveData<Boolean> get() = _isChanged
-    private var loadedFiltration: Filtration? = null
+    private var loadedFiltration: Filtration? = Filtration(null, null, null, false)
     private fun saveStateToPrefs(filtrationToSave: Filtration) {
         filtrationInteractor.saveFiltration(filtrationToSave)
     }
@@ -85,18 +85,10 @@ class FiltrationViewModel(private val filtrationInteractor: FiltrationInteractor
 
     fun isFiltrationChanged(): Boolean {
         val currentValue = _filtration.value ?: Filtration(null, null, null, false)
-        var ischanged = (loadedFiltration != null) && (currentValue.onlyWithSalary == loadedFiltration?.onlyWithSalary)
-        ischanged = ischanged && (currentValue.salary == loadedFiltration?.salary)
-            && (currentValue.industry?.id == loadedFiltration?.industry?.id)
-            && (currentValue.area?.id == loadedFiltration?.area?.id)
-        if (!loadedFiltration?.area?.regions.isNullOrEmpty() && !currentValue.area?.regions?.isEmpty()!!) {
-
-        } else {
-
-        }
-
-        return != loadedFiltration
+        Log.v("FILTRATION", "view model is changed curr $currentValue load $loadedFiltration")
+        return currentValue != loadedFiltration
     }
+
     companion object {
         private const val SALARY_DEBOUNCE = 2000L
     }
