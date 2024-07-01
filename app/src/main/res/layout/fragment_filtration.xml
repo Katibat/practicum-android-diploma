@@ -78,7 +78,7 @@
         android:paddingEnd="-4dp"
         android:paddingTop="8dp"
         android:singleLine="true"
-        android:textColorHint="?attr/hintTextColor"
+        android:textColorHint="@color/filtration_salary_hint_colors_selector"
         app:boxStrokeWidth="0dp"
         app:boxStrokeWidthFocused="0dp"
         app:endIconDrawable="@drawable/custom_clear_icon"

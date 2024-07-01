@@ -81,6 +81,7 @@ class FiltrationFragment : Fragment() {
         }
         binding.etAreaOfWork.setOnClickListener { onAreaClick.invoke() }
         binding.etIndustry.setOnClickListener { onIndustryClick.invoke() }
+        binding.ilSalary.setOnFocusChangeListener { view, b -> view.isActivated = false }
         viewModel.isChanged.observe(viewLifecycleOwner) {
             val canShowButton = viewModel.isFiltrationChanged() && it
             showSaveButton(canShowButton)
@@ -104,8 +105,10 @@ class FiltrationFragment : Fragment() {
 
     private fun renderSalary(salary: String?) {
         val currentSelection = binding.etSalary.selectionEnd
+        binding.ilSalary.isActivated = !salary.isNullOrEmpty()
         binding.etSalary.setText(salary)
         if (binding.etSalary.hasFocus()) {
+            binding.ilSalary.isActivated = false
             if (salary.isNullOrEmpty()) {
                 binding.etSalary.setSelection(0)
             } else {
@@ -227,9 +230,7 @@ class FiltrationFragment : Fragment() {
         }
 
         override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            if (!s.isNullOrEmpty()) {
-                viewModel.setSalary(s.toString())
-            }
+            viewModel.setSalary(s.toString())
         }
 
         override fun afterTextChanged(p0: Editable?) {
