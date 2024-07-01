@@ -51,10 +51,6 @@ class LocationFragment : Fragment() {
             arguments?.getParcelable(SELECTED_COUNTRY_KEY)
         }
         viewModel.setCountry(selectedCountry)
-        if (selectedCountry != null) {
-            binding.etCountry.setText(selectedCountry?.name)
-            binding.btnSelectionContainer.visibility = View.VISIBLE
-        }
         // Получить выбранный регион из аргументов, если он есть
         val selectedRegion = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             arguments?.getParcelable(SELECTED_REGION_KEY, Region::class.java)
@@ -62,10 +58,6 @@ class LocationFragment : Fragment() {
             arguments?.getParcelable(SELECTED_REGION_KEY)
         }
         viewModel.setRegion(selectedRegion)
-        if (selectedRegion != null) {
-            binding.etRegion.setText(selectedRegion?.name)
-            binding.btnSelectionContainer.visibility = View.VISIBLE
-        }
     }
 
     private fun renderRegionField(region: Region?) {
