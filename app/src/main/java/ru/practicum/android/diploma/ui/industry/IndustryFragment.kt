@@ -76,28 +76,7 @@ class IndustryFragment : Fragment() {
                 ivClear.setImageResource(R.drawable.search_icon)
             }
             adapter.industries.clear()
-            adapter.selectedIndustry = null
-            selectedIndustry = null
             adapter.notifyDataSetChanged()
-        }
-    }
-
-    private fun getIndustry(): Industry? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        arguments?.getParcelable(SELECTED_INDUSTRY_KEY, Industry::class.java)
-    } else {
-        arguments?.getParcelable(SELECTED_INDUSTRY_KEY)
-    }
-
-    private fun selectIndustry(industry: Industry?) {
-        if (industry != null) {
-            selectedIndustry = industry
-            viewModel.saveSelectIndustry(industry)
-            binding.buttonSelectIndustry.isVisible = true
-            hideKeyboard()
-            adapter.selectedIndustry = industry
-            adapter.notifyDataSetChanged()
-        } else {
-            binding.buttonSelectIndustry.isVisible = false
         }
     }
 
@@ -121,6 +100,27 @@ class IndustryFragment : Fragment() {
         adapter.notifyDataSetChanged()
     }
 
+    private fun getIndustry(): Industry? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        arguments?.getParcelable(SELECTED_INDUSTRY_KEY, Industry::class.java)
+    } else {
+        arguments?.getParcelable(SELECTED_INDUSTRY_KEY)
+    }
+
+    private fun selectIndustry(industry: Industry?) {
+        if (industry != null) {
+            renderSelected()
+        } else {
+            binding.buttonSelectIndustry.isVisible = false
+        }
+    }
+
+    private fun renderSelected() {
+        with(binding) {
+            buttonSelectIndustry.isVisible = true
+            progressBar.isVisible = false
+        }
+    }
+
     private fun renderLoading() {
         with(binding) {
             progressBar.isVisible = true
@@ -137,13 +137,6 @@ class IndustryFragment : Fragment() {
             ivPlaceholder.setImageResource(R.drawable.nothing_found_cat)
             tvPlaceholder.isVisible = true
             tvPlaceholder.setText(R.string.industry_not_found)
-        }
-    }
-
-    private fun renderSelected() {
-        with(binding) {
-            buttonSelectIndustry.isVisible = true
-            progressBar.isVisible = false
         }
     }
 
