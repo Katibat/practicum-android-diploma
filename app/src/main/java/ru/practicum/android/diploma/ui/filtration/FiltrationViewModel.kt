@@ -1,4 +1,6 @@
-package ru.practicum.android.diploma.ui.filtration
+package ru.practicum.android.di
+
+ploma.ui.filtration
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -82,9 +84,18 @@ class FiltrationViewModel(private val filtrationInteractor: FiltrationInteractor
     }
 
     fun isFiltrationChanged(): Boolean {
-        if (loadedFiltration == null) return false
-        if (_filtration.value == null) return true
-        return _filtration.value != loadedFiltration
+        val currentValue = _filtration.value ?: Filtration(null, null, null, false)
+        var ischanged = (loadedFiltration != null) && (currentValue.onlyWithSalary == loadedFiltration?.onlyWithSalary)
+        ischanged = ischanged && (currentValue.salary == loadedFiltration?.salary)
+            && (currentValue.industry?.id == loadedFiltration?.industry?.id)
+            && (currentValue.area?.id == loadedFiltration?.area?.id)
+        if (!loadedFiltration?.area?.regions.isNullOrEmpty() && !currentValue.area?.regions?.isEmpty()!!) {
+
+        } else {
+
+        }
+
+        return != loadedFiltration
     }
     companion object {
         private const val SALARY_DEBOUNCE = 2000L
