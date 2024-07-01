@@ -1,6 +1,5 @@
 package ru.practicum.android.diploma.ui.filtration
 
-
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -90,11 +89,11 @@ class FiltrationViewModel(private val filtrationInteractor: FiltrationInteractor
             if (!currentValue.area?.regions.isNullOrEmpty()) currentValue.area?.regions?.get(0)?.id else null
         val loadCountry =
             if (!loadedFiltration?.area?.regions.isNullOrEmpty()) loadedFiltration?.area?.regions?.get(0)?.id else null
-        var notChanged = (currentValue.onlyWithSalary == loadedFiltration?.onlyWithSalary)
-            && (currentValue.salary == loadedFiltration?.salary)
-            && (currentValue.industry?.id == loadedFiltration!!.industry?.id)
-            && (currArea == loadArea)
-            && (currCountry == loadCountry)
+        var notChanged = currentValue.onlyWithSalary == loadedFiltration?.onlyWithSalary
+            && currentValue.salary == loadedFiltration?.salary
+            && currentValue.industry?.id == loadedFiltration!!.industry?.id
+            && currArea == loadArea
+            && currCountry == loadCountry
         return !notChanged
     }
 
