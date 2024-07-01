@@ -45,7 +45,6 @@ class FiltrationFragment : Fragment() {
         setFragmentResultListener(INDUSTRY_RESULT_KEY) { requestKey, bundle ->
             var industry = getIndustry(bundle)
             if (industry != null) viewModel.setIndustry(industry)
-            Log.v("FILTRATION", "fragment view created after set industry from bundle $industry")
         }
         setFragmentResultListener(REGI0N_RESULT_KEY) { requestKey, bundle ->
             val country = getCountry(bundle)
@@ -62,9 +61,6 @@ class FiltrationFragment : Fragment() {
         }
         binding.checkBoxSalary.setOnClickListener {
             viewModel.setCheckbox(binding.checkBoxSalary.isChecked)
-        }
-        viewModel.isChanged.observe(viewLifecycleOwner) {
-            showSaveButton(it)
         }
         binding.buttonRemove.setOnClickListener {
             viewModel.setEmpty()
@@ -86,6 +82,10 @@ class FiltrationFragment : Fragment() {
         binding.etAreaOfWork.setOnClickListener { onAreaClick.invoke() }
         binding.etIndustry.setOnClickListener { onIndustryClick.invoke() }
         binding.ilSalary.setOnFocusChangeListener { view, b -> view.isActivated = false }
+        viewModel.isChanged.observe(viewLifecycleOwner) {
+            val canShowButton = viewModel.isFiltrationChanged() && it
+            showSaveButton(canShowButton)
+        }
     }
 
     private fun render(filtration: Filtration) {
