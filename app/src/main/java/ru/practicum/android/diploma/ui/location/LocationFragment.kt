@@ -3,7 +3,6 @@ package ru.practicum.android.diploma.ui.location
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -124,7 +123,6 @@ class LocationFragment : Fragment() {
     private fun setupRegionField() {
         binding.etRegion.setOnClickListener { onRegionClick.invoke() }
         binding.tilRegion.setEndIconOnClickListener { onRegionClick.invoke() }
-
     }
 
     private val onCountryClick: () -> Unit = {
@@ -134,7 +132,7 @@ class LocationFragment : Fragment() {
     private val onRegionClick: () -> Unit = {
         val bundle = Bundle()
         bundle.apply {
-        if (viewModel.selectedCountry.value != null) {
+            if (viewModel.selectedCountry.value != null) {
                 putParcelable(SELECTED_COUNTRY_KEY, viewModel.selectedCountry.value)
             }
             if (viewModel.selectedRegion.value != null) {
