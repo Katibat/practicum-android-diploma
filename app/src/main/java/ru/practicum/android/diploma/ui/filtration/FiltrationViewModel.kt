@@ -90,7 +90,7 @@ class FiltrationViewModel(private val filtrationInteractor: FiltrationInteractor
         val loadCountry =
             if (!loadedFiltration?.area?.regions.isNullOrEmpty()) loadedFiltration?.area?.regions?.get(0)?.id else null
         var notChanged = currentValue.onlyWithSalary == loadedFiltration?.onlyWithSalary
-            && currentValue.salary == loadedFiltration?.salary
+            && currentValue.salary ?: "" == loadedFiltration?.salary ?: ""
             && currentValue.industry?.id == loadedFiltration!!.industry?.id
             && currArea == loadArea
             && currCountry == loadCountry
