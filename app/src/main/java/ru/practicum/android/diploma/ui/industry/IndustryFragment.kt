@@ -115,6 +115,7 @@ class IndustryFragment : Fragment() {
     private fun renderLoading() {
         with(binding) {
             progressBar.isVisible = true
+            buttonSelectIndustry.isVisible = false
         }
     }
 
