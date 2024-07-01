@@ -117,24 +117,31 @@ class LocationFragment : Fragment() {
     }
 
     private fun setupCountryField() {
-        binding.etCountry.setOnClickListener {
-            findNavController().navigate(R.id.action_locationFragment_to_countryFragment)
-        }
+        binding.etCountry.setOnClickListener { onCountryClick.invoke() }
+        binding.tilCountry.setEndIconOnClickListener { onCountryClick.invoke() }
     }
 
     private fun setupRegionField() {
-        binding.etRegion.setOnClickListener {
-            val bundle = Bundle().apply {
-                Log.v("LOCATION", "country ${viewModel.selectedCountry.value} region ${viewModel.selectedRegion.value}")
-                if (viewModel.selectedCountry.value != null) {
-                    putParcelable(SELECTED_COUNTRY_KEY, viewModel.selectedCountry.value)
-                }
-                if (viewModel.selectedRegion.value != null) {
-                    putParcelable(SELECTED_REGION_KEY, viewModel.selectedRegion.value)
-                }
+        binding.etRegion.setOnClickListener { onRegionClick.invoke() }
+        binding.tilRegion.setEndIconOnClickListener { onRegionClick.invoke() }
+
+    }
+
+    private val onCountryClick: () -> Unit = {
+        findNavController().navigate(R.id.action_locationFragment_to_countryFragment)
+    }
+
+    private val onRegionClick: () -> Unit = {
+        val bundle = Bundle()
+        bundle.apply {
+        if (viewModel.selectedCountry.value != null) {
+                putParcelable(SELECTED_COUNTRY_KEY, viewModel.selectedCountry.value)
             }
-            findNavController().navigate(R.id.action_locationFragment_to_regionFragment, bundle)
+            if (viewModel.selectedRegion.value != null) {
+                putParcelable(SELECTED_REGION_KEY, viewModel.selectedRegion.value)
+            }
         }
+        findNavController().navigate(R.id.action_locationFragment_to_regionFragment, bundle)
     }
 
     override fun onResume() {
