@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
@@ -37,7 +39,12 @@ class LocationFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         toolbarSetup()
-
+        viewModel.selectedCountry.observe(viewLifecycleOwner) {
+            renderCountryField(it)
+        }
+        viewModel.selectedRegion.observe(viewLifecycleOwner) {
+            renderRegionField(it)
+        }
         val selectedCountry = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             arguments?.getParcelable(SELECTED_COUNTRY_KEY, Country::class.java)
         } else {
@@ -59,37 +66,58 @@ class LocationFragment : Fragment() {
             binding.etRegion.setText(selectedRegion?.name)
             binding.btnSelectionContainer.visibility = View.VISIBLE
         }
+    }
 
-        // Обработка логики для setupRegionField
-        setupCountryField()
-        setupRegionField()
+    private fun renderRegionField(region: Region?) {
+        if (region == null) {
+            binding.apply {
+                etRegion.setText("")
+                tilRegion.setEndIconDrawable(R.drawable.arrow_forward)
+                tilRegion.setEndIconOnClickListener(regionOnClickListener)
+                etRegion.setOnClickListener(regionOnClickListener)
+            }
+        } else {
+            binding.apply {
+                etRegion.setText(region.name)
+                tilRegion.setEndIconDrawable(R.drawable.clean_icon)
+                etRegion.setOnClickListener(regionOnClickListener)
+                tilRegion.setEndIconOnClickListener {
+                    viewModel.setRegion(null)
+                }
+            }
+        }
         setupSelectButton()
-        setupClearButton()
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    private fun setupClearButton() {
-        binding.tilCountry.setEndIconOnClickListener {
-            binding.etCountry.setText("")
-            viewModel.setRegion(null)
-            binding.tilRegion.setEndIconDrawable(R.drawable.arrow_forward)
-            updateClearButtonVisibility()
-            setupSelectButton()
-            setupRegionField()
+    private fun renderCountryField(country: Country?) {
+        if (country == null) {
+            binding.apply {
+                btnSelectionContainer.isVisible = false
+                etCountry.setText("")
+                tilCountry.setEndIconDrawable(R.drawable.arrow_forward)
+                tilCountry.setEndIconOnClickListener {
+                    findNavController().navigate(R.id.action_locationFragment_to_countryFragment)
+                }
+                etCountry.setOnClickListener {
+                    findNavController().navigate(R.id.action_locationFragment_to_countryFragment)
+                }
+            }
+        } else {
+            binding.apply {
+                btnSelectionContainer.isVisible = true
+                etCountry.setText(country.name)
+                tilCountry.setEndIconDrawable(R.drawable.clean_icon)
+                etCountry.setOnClickListener {
+                    findNavController().navigate(R.id.action_locationFragment_to_countryFragment)
+                }
+                tilCountry.setEndIconOnClickListener {
+                    viewModel.setCountry(null)
+                }
+            }
         }
-
-        binding.tilRegion.setEndIconOnClickListener {
-            binding.etRegion.setText("")
-            viewModel.setCountry(null)
-            binding.tilRegion.setEndIconDrawable(R.drawable.arrow_forward)
-            updateClearButtonVisibility()
-            setupSelectButton()
-            setupRegionField()
-        }
-
-        // Обновление видимости кнопки очистки
-        updateClearButtonVisibility()
+        setupSelectButton()
     }
+
 
     private fun updateClearButtonVisibility() {
         val isCountryEmpty = binding.etCountry.text.isNullOrEmpty()
@@ -116,25 +144,17 @@ class LocationFragment : Fragment() {
         }
     }
 
-    private fun setupCountryField() {
-        binding.etCountry.setOnClickListener {
-            findNavController().navigate(R.id.action_locationFragment_to_countryFragment)
-        }
-    }
-
-    private fun setupRegionField() {
-        binding.etRegion.setOnClickListener {
-            val bundle = Bundle().apply {
-                Log.v("LOCATION", "country ${viewModel.selectedCountry.value} region ${viewModel.selectedRegion.value}")
-                if (viewModel.selectedCountry.value != null) {
-                    putParcelable(SELECTED_COUNTRY_KEY, viewModel.selectedCountry.value)
-                }
-                if (viewModel.selectedRegion.value != null) {
-                    putParcelable(SELECTED_REGION_KEY, viewModel.selectedRegion.value)
-                }
+    private val regionOnClickListener = OnClickListener {
+        val bundle = Bundle().apply {
+            Log.v("LOCATION", "country ${viewModel.selectedCountry.value} region ${viewModel.selectedRegion.value}")
+            if (viewModel.selectedCountry.value != null) {
+                putParcelable(SELECTED_COUNTRY_KEY, viewModel.selectedCountry.value)
             }
-            findNavController().navigate(R.id.action_locationFragment_to_regionFragment, bundle)
+            if (viewModel.selectedRegion.value != null) {
+                putParcelable(SELECTED_REGION_KEY, viewModel.selectedRegion.value)
+            }
         }
+        findNavController().navigate(R.id.action_locationFragment_to_regionFragment, bundle)
     }
 
     override fun onResume() {
