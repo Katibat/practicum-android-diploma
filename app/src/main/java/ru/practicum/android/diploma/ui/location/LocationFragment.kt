@@ -69,6 +69,7 @@ class LocationFragment : Fragment() {
             } else {
                 updateClearButtonVisibility()
                 onCountryClick.invoke()
+                setupSelectButton()
             }
         }
 
@@ -82,6 +83,7 @@ class LocationFragment : Fragment() {
             } else {
                 updateClearButtonVisibility()
                 onCountryClick.invoke()
+                setupSelectButton()
             }
         }
 
@@ -95,6 +97,7 @@ class LocationFragment : Fragment() {
             } else {
                 updateClearButtonVisibility()
                 onRegionClick.invoke()
+                setupSelectButton()
             }
         }
 
@@ -108,8 +111,12 @@ class LocationFragment : Fragment() {
             } else {
                 updateClearButtonVisibility()
                 onRegionClick.invoke()
+                setupSelectButton()
             }
         }
+
+        updateClearButtonVisibility()
+        setupSelectButton()
     }
 
     private fun updateClearButtonVisibility() {
