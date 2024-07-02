@@ -86,6 +86,7 @@ class LocationFragment : Fragment() {
         if (region == null) {
             binding.apply {
                 etRegion.setText("")
+                tilRegion.isActivated = false
                 tilRegion.setEndIconDrawable(R.drawable.arrow_forward)
                 tilRegion.setEndIconOnClickListener(regionOnClickListener)
                 etRegion.setOnClickListener(regionOnClickListener)
@@ -93,6 +94,7 @@ class LocationFragment : Fragment() {
         } else {
             binding.apply {
                 etRegion.setText(region.name)
+                tilRegion.isActivated = true
                 tilRegion.setEndIconDrawable(R.drawable.clean_icon)
                 etRegion.setOnClickListener(regionOnClickListener)
                 tilRegion.setEndIconOnClickListener {
@@ -108,6 +110,7 @@ class LocationFragment : Fragment() {
             binding.apply {
                 btnSelectionContainer.isVisible = false
                 etCountry.setText("")
+                tilCountry.isActivated = false
                 tilCountry.setEndIconDrawable(R.drawable.arrow_forward)
                 tilCountry.setEndIconOnClickListener {
                     val bundle = Bundle().apply {
@@ -136,6 +139,7 @@ class LocationFragment : Fragment() {
             binding.apply {
                 btnSelectionContainer.isVisible = true
                 etCountry.setText(country.name)
+                tilCountry.isActivated = true
                 tilCountry.setEndIconDrawable(R.drawable.clean_icon)
                 etCountry.setOnClickListener {
                     val bundle = Bundle().apply {
