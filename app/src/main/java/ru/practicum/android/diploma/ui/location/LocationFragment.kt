@@ -73,11 +73,13 @@ class LocationFragment : Fragment() {
             binding.etCountry.setText("")
             viewModel.setCountry(null)
             binding.tilRegion.setEndIconDrawable(R.drawable.arrow_forward)
+            binding.etRegion.setText("")
+            viewModel.setRegion(null)
+            binding.tilRegion.setEndIconDrawable(R.drawable.arrow_forward)
             updateClearButtonVisibility()
             setupSelectButton()
             setupRegionField()
         }
-
         binding.tilRegion.setEndIconOnClickListener {
             binding.etRegion.setText("")
             viewModel.setRegion(null)
@@ -86,7 +88,6 @@ class LocationFragment : Fragment() {
             setupSelectButton()
             setupRegionField()
         }
-
         // Обновление видимости кнопки очистки
         updateClearButtonVisibility()
     }
