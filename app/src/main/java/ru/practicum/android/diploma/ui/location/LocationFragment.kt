@@ -51,6 +51,7 @@ class LocationFragment : Fragment() {
             arguments?.getParcelable(SELECTED_COUNTRY_KEY)
         }
         viewModel.setCountry(selectedCountry)
+        Log.v("LOCATION", "country $selectedCountry")
         // Получить выбранный регион из аргументов, если он есть
         val selectedRegion = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             arguments?.getParcelable(SELECTED_REGION_KEY, Region::class.java)
@@ -58,6 +59,7 @@ class LocationFragment : Fragment() {
             arguments?.getParcelable(SELECTED_REGION_KEY)
         }
         viewModel.setRegion(selectedRegion)
+        Log.v("LOCATION", "region $selectedRegion")
     }
 
     private fun renderRegionField(region: Region?) {
@@ -131,7 +133,7 @@ class LocationFragment : Fragment() {
                     putParcelable(SELECTED_REGION_KEY, viewModel.selectedRegion.value)
                 }
             }
-            setFragmentResult(REGI0N_RESULT_KEY, bundle)
+            setFragmentResult(LOCATION_RESULT_KEY, bundle)
             findNavController().navigateUp()
         }
     }
@@ -181,6 +183,9 @@ class LocationFragment : Fragment() {
     companion object {
         private const val SELECTED_COUNTRY_KEY = "selectedCountry"
         private const val SELECTED_REGION_KEY = "selectedRegion"
+        private const val LOCATION_RESULT_KEY = "locationResult"
         private const val REGI0N_RESULT_KEY = "regionResult"
+        private const val COUNTRY_RESULT_KEY = "regionResult"
+
     }
 }
