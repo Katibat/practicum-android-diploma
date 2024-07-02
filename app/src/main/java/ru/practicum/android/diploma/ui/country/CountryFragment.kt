@@ -1,17 +1,20 @@
 package ru.practicum.android.diploma.ui.country
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentCountryBinding
 import ru.practicum.android.diploma.domain.models.Country
+import ru.practicum.android.diploma.domain.models.Region
 import ru.practicum.android.diploma.ui.root.RootActivity
 
 class CountryFragment : Fragment() {
@@ -20,7 +23,20 @@ class CountryFragment : Fragment() {
     private var _adapter: CountryAdapter? = null
     private val viewModel by viewModel<CountryViewModel>()
     private val toolbar by lazy { (requireActivity() as RootActivity).toolbar }
-
+    private val selectedCountry by lazy {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getParcelable(SELECTED_COUNTRY_KEY, Country::class.java)
+        } else {
+            arguments?.getParcelable(SELECTED_COUNTRY_KEY)
+        }
+    }
+    private val selectedRegion by lazy {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getParcelable(SELECTED_REGION_KEY, Region::class.java)
+        } else {
+            arguments?.getParcelable(SELECTED_REGION_KEY)
+        }
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -99,9 +115,11 @@ class CountryFragment : Fragment() {
 
     private fun onCountryClick(country: Country) {
         val bundle = Bundle().apply {
-            putParcelable(SELECTED_COUNTRY_LABEL, Country(country.id, country.name, listOf()))
+            putParcelable(SELECTED_COUNTRY_KEY, Country(country.id, country.name, listOf()))
+            putParcelable(SELECTED_REGION_KEY, selectedRegion)
         }
-        findNavController().navigate(R.id.action_countryFragment_to_locationFragment, bundle)
+        setFragmentResult(COUNTRY_RESULT_KEY, bundle)
+        findNavController().navigateUp()
     }
 
     override fun onStop() {
@@ -114,6 +132,11 @@ class CountryFragment : Fragment() {
     private fun toolbarSetup() {
         toolbar.setNavigationIcon(R.drawable.arrow_back)
         toolbar.setNavigationOnClickListener {
+            val bundle = Bundle().apply {
+                putParcelable(SELECTED_COUNTRY_KEY, selectedCountry)
+                putParcelable(SELECTED_REGION_KEY, selectedRegion)
+            }
+            setFragmentResult(COUNTRY_RESULT_KEY, bundle)
             findNavController().navigateUp()
         }
 
@@ -129,6 +152,8 @@ class CountryFragment : Fragment() {
     }
 
     companion object {
-        private const val SELECTED_COUNTRY_LABEL = "selectedCountry"
+        private const val SELECTED_COUNTRY_KEY = "selectedCountry"
+        private const val SELECTED_REGION_KEY = "selectedRegion"
+        private const val COUNTRY_RESULT_KEY = "countryResult"
     }
 }

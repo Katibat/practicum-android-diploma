@@ -11,12 +11,15 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentLocationBinding
 import ru.practicum.android.diploma.domain.models.Country
 import ru.practicum.android.diploma.domain.models.Region
+import ru.practicum.android.diploma.ui.filtration.FiltrationFragment
+import ru.practicum.android.diploma.ui.filtration.FiltrationFragment.Companion
 import ru.practicum.android.diploma.ui.root.RootActivity
 
 class LocationFragment : Fragment() {
@@ -45,21 +48,38 @@ class LocationFragment : Fragment() {
         viewModel.selectedRegion.observe(viewLifecycleOwner) {
             renderRegionField(it)
         }
-        val selectedCountry = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arguments?.getParcelable(SELECTED_COUNTRY_KEY, Country::class.java)
-        } else {
-            arguments?.getParcelable(SELECTED_COUNTRY_KEY)
-        }
+        val selectedCountry = arguments?.let { getCountryFromBundle(it) }
         viewModel.setCountry(selectedCountry)
         Log.v("LOCATION", "country $selectedCountry")
-        // Получить выбранный регион из аргументов, если он есть
-        val selectedRegion = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arguments?.getParcelable(SELECTED_REGION_KEY, Region::class.java)
-        } else {
-            arguments?.getParcelable(SELECTED_REGION_KEY)
-        }
+        val selectedRegion = arguments?.let { getRegionFromBundle(it) }
         viewModel.setRegion(selectedRegion)
         Log.v("LOCATION", "region $selectedRegion")
+        setFragmentResultListener(REGI0N_RESULT_KEY) { requestKey, bundle ->
+            val country = getCountryFromBundle(bundle)
+            val region = getRegionFromBundle(bundle)
+            viewModel.setCountry(country)
+            viewModel.setRegion(region)
+        }
+        setFragmentResultListener(COUNTRY_RESULT_KEY) { requestKey, bundle ->
+            val country = getCountryFromBundle(bundle)
+            val region = getRegionFromBundle(bundle)
+            viewModel.setCountry(country)
+            viewModel.setRegion(region)
+        }
+    }
+
+    private fun getRegionFromBundle(bundle: Bundle): Region? =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            bundle?.getParcelable(SELECTED_REGION_KEY, Region::class.java)
+        } else {
+            bundle?.getParcelable(SELECTED_REGION_KEY)
+        }
+
+    private fun getCountryFromBundle(bundle: Bundle): Country? =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            bundle?.getParcelable(SELECTED_COUNTRY_KEY, Country::class.java)
+        } else {
+            bundle?.getParcelable(SELECTED_COUNTRY_KEY)
     }
 
     private fun renderRegionField(region: Region?) {
@@ -130,6 +150,7 @@ class LocationFragment : Fragment() {
                 }
                 tilCountry.setEndIconOnClickListener {
                     viewModel.setCountry(null)
+                    viewModel.setRegion(null)
                 }
             }
         }
@@ -209,7 +230,7 @@ class LocationFragment : Fragment() {
         private const val SELECTED_REGION_KEY = "selectedRegion"
         private const val LOCATION_RESULT_KEY = "locationResult"
         private const val REGI0N_RESULT_KEY = "regionResult"
-        private const val COUNTRY_RESULT_KEY = "regionResult"
+        private const val COUNTRY_RESULT_KEY = "countryResult"
 
     }
 }

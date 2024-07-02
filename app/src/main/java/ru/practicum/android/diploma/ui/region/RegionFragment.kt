@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -34,9 +35,9 @@ class RegionFragment : Fragment(), RegionCountCallback {
     }
     private val selectedRegion by lazy {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arguments?.getParcelable(SELECTED_COUNTRY_KEY, Country::class.java)
+            arguments?.getParcelable(SELECTED_REGION_KEY, Region::class.java)
         } else {
-            arguments?.getParcelable(SELECTED_COUNTRY_KEY)
+            arguments?.getParcelable(SELECTED_REGION_KEY)
         }
     }
 
@@ -51,20 +52,13 @@ class RegionFragment : Fragment(), RegionCountCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         toolbarSetup()
-
-
-
         viewModel.fetchRegions(selectedCountry?.id ?: "")
-
         _adapter = RegionAdapter(emptyList(), { region ->
             onRegionClick(selectedCountry, region)
         }, this)
-
         binding.rvSearch.adapter = _adapter
         binding.rvSearch.layoutManager = LinearLayoutManager(context)
-
         viewModel.regionState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is RegionState.Loading -> showLoading()
@@ -160,7 +154,8 @@ class RegionFragment : Fragment(), RegionCountCallback {
             }
             putParcelable(SELECTED_REGION_KEY, region)
         }
-        findNavController().navigate(R.id.action_regionFragment_to_locationFragment, bundle)
+        setFragmentResult(REGI0N_RESULT_KEY, bundle)
+        findNavController().navigateUp()
     }
 
     override fun onStop() {
@@ -173,6 +168,11 @@ class RegionFragment : Fragment(), RegionCountCallback {
     private fun toolbarSetup() {
         toolbar.setNavigationIcon(R.drawable.arrow_back)
         toolbar.setNavigationOnClickListener {
+            val bundle = Bundle().apply {
+                putParcelable(SELECTED_COUNTRY_KEY, selectedCountry)
+                putParcelable(SELECTED_REGION_KEY, selectedRegion)
+            }
+            setFragmentResult(REGI0N_RESULT_KEY, bundle)
             findNavController().navigateUp()
         }
 
@@ -202,5 +202,6 @@ class RegionFragment : Fragment(), RegionCountCallback {
     companion object {
         private const val SELECTED_COUNTRY_KEY = "selectedCountry"
         private const val SELECTED_REGION_KEY = "selectedRegion"
+        private const val REGI0N_RESULT_KEY = "regionResult"
     }
 }
