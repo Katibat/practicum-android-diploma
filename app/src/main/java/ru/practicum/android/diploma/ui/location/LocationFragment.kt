@@ -71,7 +71,7 @@ class LocationFragment : Fragment() {
     private fun setupClearButton() {
         binding.tilCountry.setEndIconOnClickListener {
             binding.etCountry.setText("")
-            viewModel.setRegion(null)
+            viewModel.setCountry(null)
             binding.tilRegion.setEndIconDrawable(R.drawable.arrow_forward)
             updateClearButtonVisibility()
             setupSelectButton()
@@ -80,7 +80,7 @@ class LocationFragment : Fragment() {
 
         binding.tilRegion.setEndIconOnClickListener {
             binding.etRegion.setText("")
-            viewModel.setCountry(null)
+            viewModel.setRegion(null)
             binding.tilRegion.setEndIconDrawable(R.drawable.arrow_forward)
             updateClearButtonVisibility()
             setupSelectButton()
