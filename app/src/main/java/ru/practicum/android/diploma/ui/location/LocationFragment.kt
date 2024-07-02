@@ -50,17 +50,21 @@ class LocationFragment : Fragment() {
         viewModel.setCountry(selectedCountry)
         val selectedRegion = arguments?.let { getRegionFromBundle(it) }
         viewModel.setRegion(selectedRegion)
+        Log.v("LOCATION", "1 region $selectedRegion country $selectedCountry")
         setFragmentResultListener(REGI0N_RESULT_KEY) { requestKey, bundle ->
             val country = getCountryFromBundle(bundle)
             val region = getRegionFromBundle(bundle)
             viewModel.setCountry(country)
             viewModel.setRegion(region)
+            Log.v("LOCATION", "2 region $region country $country")
+
         }
         setFragmentResultListener(COUNTRY_RESULT_KEY) { requestKey, bundle ->
             val country = getCountryFromBundle(bundle)
             val region = getRegionFromBundle(bundle)
             viewModel.setCountry(country)
             viewModel.setRegion(region)
+            Log.v("LOCATION", "3 region $region country $country")
         }
     }
 

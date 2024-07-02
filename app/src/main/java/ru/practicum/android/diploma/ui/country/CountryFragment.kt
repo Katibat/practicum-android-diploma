@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
@@ -70,6 +71,16 @@ class CountryFragment : Fragment() {
                 is CountryState.NoConnection -> showNoConnection(state.message)
             }
         }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val bundle = Bundle().apply {
+                    putParcelable(SELECTED_COUNTRY_KEY, selectedCountry)
+                    putParcelable(SELECTED_REGION_KEY, selectedRegion)
+                }
+                setFragmentResult(COUNTRY_RESULT_KEY, bundle)
+                findNavController().navigateUp()
+            }
+        })
     }
 
     private fun showLoading() {

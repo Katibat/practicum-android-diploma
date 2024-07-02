@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
@@ -94,6 +95,16 @@ class RegionFragment : Fragment(), RegionCountCallback {
 
             override fun afterTextChanged(s: Editable?) {
                 // empty block
+            }
+        })
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val bundle = Bundle().apply {
+                    putParcelable(SELECTED_COUNTRY_KEY, selectedCountry)
+                    putParcelable(SELECTED_REGION_KEY, selectedRegion)
+                }
+                setFragmentResult(REGI0N_RESULT_KEY, bundle)
+                findNavController().navigateUp()
             }
         })
     }
