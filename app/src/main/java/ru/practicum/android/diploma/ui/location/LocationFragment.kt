@@ -37,7 +37,8 @@ class LocationFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         toolbarSetup()
-
+        binding.tilRegion.isActivated = false
+        binding.tilCountry.isActivated = false
         val selectedCountry = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             arguments?.getParcelable(SELECTED_COUNTRY_KEY, Country::class.java)
         } else {
@@ -47,6 +48,9 @@ class LocationFragment : Fragment() {
         if (selectedCountry != null) {
             binding.etCountry.setText(selectedCountry?.name)
             binding.btnSelectionContainer.visibility = View.VISIBLE
+            binding.tilCountry.isActivated = true
+        /*} else {
+            binding.tilCountry.isActivated = false*/
         }
         // Получить выбранный регион из аргументов, если он есть
         val selectedRegion = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -58,6 +62,9 @@ class LocationFragment : Fragment() {
         if (selectedRegion != null) {
             binding.etRegion.setText(selectedRegion?.name)
             binding.btnSelectionContainer.visibility = View.VISIBLE
+            binding.tilRegion.isActivated = true
+        /*} else {
+        binding.tilRegion.isActivated = false*/
         }
 
         // Обработка логики для setupRegionField
@@ -76,6 +83,7 @@ class LocationFragment : Fragment() {
             updateClearButtonVisibility()
             setupSelectButton()
             setupRegionField()
+            binding.tilCountry.isActivated = false
         }
 
         binding.tilRegion.setEndIconOnClickListener {
@@ -85,6 +93,7 @@ class LocationFragment : Fragment() {
             updateClearButtonVisibility()
             setupSelectButton()
             setupRegionField()
+            binding.tilRegion.isActivated = false
         }
 
         // Обновление видимости кнопки очистки
@@ -140,6 +149,7 @@ class LocationFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         updateClearButtonVisibility()
+
     }
 
     override fun onStop() {

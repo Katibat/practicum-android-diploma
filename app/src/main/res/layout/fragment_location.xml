@@ -5,64 +5,59 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilCountry"
-        style="@style/TextInputLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:clickable="true"
-        android:focusable="true"
+        android:hint="@string/country"
+        android:textColorHint="@color/stroke_filtration_text_colors"
+        app:hintTextColor="@color/stroke_filtration_text_colors"
         app:endIconDrawable="@drawable/arrow_forward"
         app:endIconMode="custom"
         app:endIconTint="?attr/colorSecondary"
-        android:hint="@string/country"
-        android:background="@null"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etCountry"
-            style="@style/TextInputEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?attr/background"
             android:focusable="false"
-            android:gravity="center_vertical"
-            android:inputType="none"
-            android:background="@null"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"/>
+            android:fontFamily="@font/ys_display_regular"
+            android:inputType="text"
+            android:maxLines="1"
+            android:textColor="?attr/colorSecondary"
+            android:textSize="@dimen/text_16" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilRegion"
-        style="@style/TextInputLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
-        android:layout_height="60dp"
-        android:clickable="true"
-        android:focusable="true"
+        android:layout_height="wrap_content"
         android:hint="@string/region"
-        android:background="@null"
+        android:textColorHint="@color/stroke_filtration_text_colors"
         app:endIconDrawable="@drawable/arrow_forward"
         app:endIconMode="custom"
         app:endIconTint="?attr/colorSecondary"
-        app:boxStrokeWidth="1dp"
-        app:boxStrokeWidthFocused="1dp"
+        app:hintTextColor="@color/stroke_filtration_text_colors"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tilCountry">
+        app:layout_constraintTop_toBottomOf="@id/tilCountry">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etRegion"
-            style="@style/TextInputEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?attr/background"
             android:focusable="false"
-            android:gravity="center_vertical"
-            android:background="@null"
-            android:inputType="none"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp" />
-
+            android:fontFamily="@font/ys_display_regular"
+            android:inputType="text"
+            android:maxLines="1"
+            android:textColor="?attr/colorSecondary"
+            android:textSize="@dimen/text_16" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
