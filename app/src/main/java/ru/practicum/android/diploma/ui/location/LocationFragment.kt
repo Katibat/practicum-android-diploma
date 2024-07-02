@@ -90,10 +90,26 @@ class LocationFragment : Fragment() {
                 etCountry.setText("")
                 tilCountry.setEndIconDrawable(R.drawable.arrow_forward)
                 tilCountry.setEndIconOnClickListener {
-                    findNavController().navigate(R.id.action_locationFragment_to_countryFragment)
+                    val bundle = Bundle().apply {
+                        if (viewModel.selectedCountry.value != null) {
+                            putParcelable(SELECTED_COUNTRY_KEY, viewModel.selectedCountry.value)
+                        }
+                        if (viewModel.selectedRegion.value != null) {
+                            putParcelable(SELECTED_REGION_KEY, viewModel.selectedRegion.value)
+                        }
+                    }
+                    findNavController().navigate(R.id.action_locationFragment_to_countryFragment, bundle)
                 }
                 etCountry.setOnClickListener {
-                    findNavController().navigate(R.id.action_locationFragment_to_countryFragment)
+                    val bundle = Bundle().apply {
+                        if (viewModel.selectedCountry.value != null) {
+                            putParcelable(SELECTED_COUNTRY_KEY, viewModel.selectedCountry.value)
+                        }
+                        if (viewModel.selectedRegion.value != null) {
+                            putParcelable(SELECTED_REGION_KEY, viewModel.selectedRegion.value)
+                        }
+                    }
+                    findNavController().navigate(R.id.action_locationFragment_to_countryFragment, bundle)
                 }
             }
         } else {
@@ -102,7 +118,15 @@ class LocationFragment : Fragment() {
                 etCountry.setText(country.name)
                 tilCountry.setEndIconDrawable(R.drawable.clean_icon)
                 etCountry.setOnClickListener {
-                    findNavController().navigate(R.id.action_locationFragment_to_countryFragment)
+                    val bundle = Bundle().apply {
+                        if (viewModel.selectedCountry.value != null) {
+                            putParcelable(SELECTED_COUNTRY_KEY, viewModel.selectedCountry.value)
+                        }
+                        if (viewModel.selectedRegion.value != null) {
+                            putParcelable(SELECTED_REGION_KEY, viewModel.selectedRegion.value)
+                        }
+                    }
+                    findNavController().navigate(R.id.action_locationFragment_to_countryFragment, bundle)
                 }
                 tilCountry.setEndIconOnClickListener {
                     viewModel.setCountry(null)

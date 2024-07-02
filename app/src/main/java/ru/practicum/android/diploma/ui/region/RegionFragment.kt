@@ -24,8 +24,21 @@ class RegionFragment : Fragment(), RegionCountCallback {
     private val binding get() = _binding!!
     private val viewModel by viewModel<RegionViewModel>()
     private var _adapter: RegionAdapter? = null
-
     private val toolbar by lazy { (requireActivity() as RootActivity).toolbar }
+    private val selectedCountry by lazy {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getParcelable(SELECTED_COUNTRY_KEY, Country::class.java)
+        } else {
+            arguments?.getParcelable(SELECTED_COUNTRY_KEY)
+        }
+    }
+    private val selectedRegion by lazy {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getParcelable(SELECTED_COUNTRY_KEY, Country::class.java)
+        } else {
+            arguments?.getParcelable(SELECTED_COUNTRY_KEY)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,11 +54,7 @@ class RegionFragment : Fragment(), RegionCountCallback {
 
         toolbarSetup()
 
-        val selectedCountry = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arguments?.getParcelable(SELECTED_COUNTRY_KEY, Country::class.java)
-        } else {
-            arguments?.getParcelable(SELECTED_COUNTRY_KEY)
-        }
+
 
         viewModel.fetchRegions(selectedCountry?.id ?: "")
 
