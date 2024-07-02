@@ -82,19 +82,25 @@ class FiltrationViewModel(private val filtrationInteractor: FiltrationInteractor
     }
 
     fun isFiltrationChanged(): Boolean {
-        val currentValue = _filtration.value ?: Filtration(null, null, null, false)
+        val currentValue = _filtration.value ?: getEmptyFiltration()
         val currArea = currentValue.area?.id
         val loadArea = loadedFiltration?.area?.id
-        val currCountry =
-            if (!currentValue.area?.regions.isNullOrEmpty()) currentValue.area?.regions?.get(0)?.id else null
-        val loadCountry =
-            if (!loadedFiltration?.area?.regions.isNullOrEmpty()) loadedFiltration?.area?.regions?.get(0)?.id else null
+        val currCountry = getCountryIdFromFiltration(currentValue)
+        val loadCountry = getCountryIdFromFiltration(loadedFiltration ?: getEmptyFiltration())
         var notChanged = currentValue.onlyWithSalary == loadedFiltration?.onlyWithSalary
             && currentValue.salary ?: "" == loadedFiltration?.salary ?: ""
             && currentValue.industry?.id == loadedFiltration!!.industry?.id
             && currArea == loadArea
             && currCountry == loadCountry
         return !notChanged
+    }
+
+    private fun getEmptyFiltration(): Filtration {
+        return Filtration(null, null, null, false)
+    }
+
+    private fun getCountryIdFromFiltration(currentValue: Filtration): String? {
+        return if (!currentValue.area?.regions.isNullOrEmpty()) currentValue.area?.regions?.get(0)?.id else null
     }
 
     companion object {
