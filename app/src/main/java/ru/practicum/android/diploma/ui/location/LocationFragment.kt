@@ -65,7 +65,6 @@ class LocationFragment : Fragment() {
                 viewModel.setCountry(null)
                 setupSelectButton()
                 updateClearButtonVisibility()
-                onCountryClick.invoke()
             } else {
                 updateClearButtonVisibility()
                 onCountryClick.invoke()
@@ -79,7 +78,6 @@ class LocationFragment : Fragment() {
                 viewModel.setCountry(null)
                 setupSelectButton()
                 updateClearButtonVisibility()
-                onCountryClick.invoke()
             } else {
                 updateClearButtonVisibility()
                 onCountryClick.invoke()
@@ -93,7 +91,6 @@ class LocationFragment : Fragment() {
                 viewModel.setRegion(null)
                 updateClearButtonVisibility()
                 setupSelectButton()
-                onRegionClick.invoke()
             } else {
                 updateClearButtonVisibility()
                 onRegionClick.invoke()
@@ -107,7 +104,6 @@ class LocationFragment : Fragment() {
                 viewModel.setRegion(null)
                 updateClearButtonVisibility()
                 setupSelectButton()
-                onRegionClick.invoke()
             } else {
                 updateClearButtonVisibility()
                 onRegionClick.invoke()
