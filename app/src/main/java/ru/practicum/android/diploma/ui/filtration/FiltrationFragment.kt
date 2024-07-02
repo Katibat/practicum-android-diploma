@@ -46,7 +46,7 @@ class FiltrationFragment : Fragment() {
             var industry = getIndustry(bundle)
             if (industry != null) viewModel.setIndustry(industry)
         }
-        setFragmentResultListener(REGI0N_RESULT_KEY) { requestKey, bundle ->
+        setFragmentResultListener(LOCATION_RESULT_KEY) { requestKey, bundle ->
             val country = getCountry(bundle)
             val region = getRegion(bundle)
             if (country != null) {
@@ -256,7 +256,7 @@ class FiltrationFragment : Fragment() {
     }
 
     companion object {
-        private const val REGI0N_RESULT_KEY = "regionResult"
+        private const val LOCATION_RESULT_KEY = "locationResult"
         private const val INDUSTRY_RESULT_KEY = "industryResult"
         private const val FRAGMENT_RESULT_KEY = "fragmentResult"
         private const val IS_APPLY_KEY = "isApply"
