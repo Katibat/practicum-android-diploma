@@ -108,28 +108,8 @@ class LocationFragment : Fragment() {
                 etCountry.setText("")
                 tilCountry.isActivated = false
                 tilCountry.setEndIconDrawable(R.drawable.arrow_forward)
-                tilCountry.setEndIconOnClickListener {
-                    val bundle = Bundle().apply {
-                        if (viewModel.selectedCountry.value != null) {
-                            putParcelable(SELECTED_COUNTRY_KEY, viewModel.selectedCountry.value)
-                        }
-                        if (viewModel.selectedRegion.value != null) {
-                            putParcelable(SELECTED_REGION_KEY, viewModel.selectedRegion.value)
-                        }
-                    }
-                    findNavController().navigate(R.id.action_locationFragment_to_countryFragment, bundle)
-                }
-                etCountry.setOnClickListener {
-                    val bundle = Bundle().apply {
-                        if (viewModel.selectedCountry.value != null) {
-                            putParcelable(SELECTED_COUNTRY_KEY, viewModel.selectedCountry.value)
-                        }
-                        if (viewModel.selectedRegion.value != null) {
-                            putParcelable(SELECTED_REGION_KEY, viewModel.selectedRegion.value)
-                        }
-                    }
-                    findNavController().navigate(R.id.action_locationFragment_to_countryFragment, bundle)
-                }
+                tilCountry.setEndIconOnClickListener(countryOnClickListener)
+                etCountry.setOnClickListener(countryOnClickListener)
             }
         } else {
             binding.apply {
@@ -137,17 +117,7 @@ class LocationFragment : Fragment() {
                 etCountry.setText(country.name)
                 tilCountry.isActivated = true
                 tilCountry.setEndIconDrawable(R.drawable.clean_icon)
-                etCountry.setOnClickListener {
-                    val bundle = Bundle().apply {
-                        if (viewModel.selectedCountry.value != null) {
-                            putParcelable(SELECTED_COUNTRY_KEY, viewModel.selectedCountry.value)
-                        }
-                        if (viewModel.selectedRegion.value != null) {
-                            putParcelable(SELECTED_REGION_KEY, viewModel.selectedRegion.value)
-                        }
-                    }
-                    findNavController().navigate(R.id.action_locationFragment_to_countryFragment, bundle)
-                }
+                etCountry.setOnClickListener(countryOnClickListener)
                 tilCountry.setEndIconOnClickListener {
                     viewModel.setCountry(null)
                     viewModel.setRegion(null)
@@ -193,6 +163,18 @@ class LocationFragment : Fragment() {
             }
         }
         findNavController().navigate(R.id.action_locationFragment_to_regionFragment, bundle)
+    }
+
+    private val countryOnClickListener = OnClickListener {
+        val bundle = Bundle().apply {
+            if (viewModel.selectedCountry.value != null) {
+                putParcelable(SELECTED_COUNTRY_KEY, viewModel.selectedCountry.value)
+            }
+            if (viewModel.selectedRegion.value != null) {
+                putParcelable(SELECTED_REGION_KEY, viewModel.selectedRegion.value)
+            }
+        }
+        findNavController().navigate(R.id.action_locationFragment_to_countryFragment, bundle)
     }
 
     override fun onResume() {
