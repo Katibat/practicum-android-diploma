@@ -18,8 +18,6 @@ import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentLocationBinding
 import ru.practicum.android.diploma.domain.models.Country
 import ru.practicum.android.diploma.domain.models.Region
-import ru.practicum.android.diploma.ui.filtration.FiltrationFragment
-import ru.practicum.android.diploma.ui.filtration.FiltrationFragment.Companion
 import ru.practicum.android.diploma.ui.root.RootActivity
 
 class LocationFragment : Fragment() {
@@ -50,10 +48,8 @@ class LocationFragment : Fragment() {
         }
         val selectedCountry = arguments?.let { getCountryFromBundle(it) }
         viewModel.setCountry(selectedCountry)
-        Log.v("LOCATION", "country $selectedCountry")
         val selectedRegion = arguments?.let { getRegionFromBundle(it) }
         viewModel.setRegion(selectedRegion)
-        Log.v("LOCATION", "region $selectedRegion")
         setFragmentResultListener(REGI0N_RESULT_KEY) { requestKey, bundle ->
             val country = getCountryFromBundle(bundle)
             val region = getRegionFromBundle(bundle)
@@ -80,7 +76,7 @@ class LocationFragment : Fragment() {
             bundle?.getParcelable(SELECTED_COUNTRY_KEY, Country::class.java)
         } else {
             bundle?.getParcelable(SELECTED_COUNTRY_KEY)
-    }
+        }
 
     private fun renderRegionField(region: Region?) {
         if (region == null) {
@@ -160,7 +156,6 @@ class LocationFragment : Fragment() {
         }
         setupSelectButton()
     }
-
 
     private fun updateClearButtonVisibility() {
         val isCountryEmpty = binding.etCountry.text.isNullOrEmpty()

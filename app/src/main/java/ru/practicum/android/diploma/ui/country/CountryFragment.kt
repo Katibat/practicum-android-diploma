@@ -37,6 +37,7 @@ class CountryFragment : Fragment() {
             arguments?.getParcelable(SELECTED_REGION_KEY)
         }
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
