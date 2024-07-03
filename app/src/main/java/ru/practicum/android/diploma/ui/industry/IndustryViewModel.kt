@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.domain.api.industry.IndustryInteractor
@@ -74,10 +73,7 @@ class IndustryViewModel(private val interactor: IndustryInteractor) : ViewModel(
     fun searchDebounce(changedText: String) {
         if (lastSearchQueryText == changedText) return
         this.lastSearchQueryText = changedText
-        viewModelScope.launch {
-            delay(SEARCH_DEBOUNCE_DELAY_MILLIS)
-            search(changedText)
-        }
+        search(changedText)
     }
 
     companion object {

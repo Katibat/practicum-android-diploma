@@ -9,22 +9,21 @@ import ru.practicum.android.diploma.domain.models.Filtration
 import ru.practicum.android.diploma.domain.models.Industry
 
 class FiltrationViewModel(private val filtrationInteractor: FiltrationInteractor) : ViewModel() {
-    private val _filtration = MutableLiveData<Filtration>(Filtration(null, null, null, false))
+    private val _filtration = MutableLiveData(Filtration(null, null, null, false))
     val filtration: LiveData<Filtration> get() = _filtration
-    private val _isChanged = MutableLiveData<Boolean>(false)
+    private val _isChanged = MutableLiveData(false)
     val isChanged: LiveData<Boolean> get() = _isChanged
-
+    private var loadedFiltration: Filtration? = Filtration(null, null, null, false)
     private fun saveStateToPrefs(filtrationToSave: Filtration) {
         filtrationInteractor.saveFiltration(filtrationToSave)
     }
 
     fun getFiltrationFromPrefs() {
-        val t = filtrationInteractor.getFiltration()
-        renderFiltration(t)
+        loadedFiltration = filtrationInteractor.getFiltration() ?: Filtration(null, null, null, false)
+        renderFiltration(loadedFiltration)
     }
 
     fun setCheckbox(onlyWithSalary: Boolean) {
-        _isChanged.value = true
         renderFiltration(
             Filtration(
                 area = filtration.value?.area,
@@ -36,7 +35,6 @@ class FiltrationViewModel(private val filtrationInteractor: FiltrationInteractor
     }
 
     fun setSalary(salary: String?) {
-        _isChanged.value = true
         renderFiltration(
             Filtration(
                 area = filtration.value?.area,
@@ -48,7 +46,6 @@ class FiltrationViewModel(private val filtrationInteractor: FiltrationInteractor
     }
 
     fun setArea(area: Country?) {
-        _isChanged.value = true
         renderFiltration(
             Filtration(
                 area = area,
@@ -60,7 +57,6 @@ class FiltrationViewModel(private val filtrationInteractor: FiltrationInteractor
     }
 
     fun setIndustry(industry: Industry?) {
-        _isChanged.value = true
         renderFiltration(
             Filtration(
                 area = filtration.value?.area,
@@ -78,10 +74,33 @@ class FiltrationViewModel(private val filtrationInteractor: FiltrationInteractor
         } else {
             setEmpty()
         }
+        _isChanged.value = isFiltrationChanged()
     }
 
     fun setEmpty() {
         renderFiltration(Filtration(null, null, null, false))
+    }
+
+    fun isFiltrationChanged(): Boolean {
+        val currentValue = _filtration.value ?: getEmptyFiltration()
+        val currArea = currentValue.area?.id
+        val loadArea = loadedFiltration?.area?.id
+        val currCountry = getCountryIdFromFiltration(currentValue)
+        val loadCountry = getCountryIdFromFiltration(loadedFiltration ?: getEmptyFiltration())
+        var notChanged = currentValue.onlyWithSalary == loadedFiltration?.onlyWithSalary
+            && currentValue.salary ?: "" == loadedFiltration?.salary ?: ""
+            && currentValue.industry?.id == loadedFiltration!!.industry?.id
+            && currArea == loadArea
+            && currCountry == loadCountry
+        return !notChanged
+    }
+
+    private fun getEmptyFiltration(): Filtration {
+        return Filtration(null, null, null, false)
+    }
+
+    private fun getCountryIdFromFiltration(currentValue: Filtration): String? {
+        return if (!currentValue.area?.regions.isNullOrEmpty()) currentValue.area?.regions?.get(0)?.id else null
     }
 
     companion object {

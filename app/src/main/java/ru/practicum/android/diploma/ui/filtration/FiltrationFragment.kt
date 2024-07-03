@@ -1,14 +1,13 @@
 package ru.practicum.android.diploma.ui.filtration
 
-import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
@@ -46,9 +45,8 @@ class FiltrationFragment : Fragment() {
         setFragmentResultListener(INDUSTRY_RESULT_KEY) { requestKey, bundle ->
             var industry = getIndustry(bundle)
             if (industry != null) viewModel.setIndustry(industry)
-            Log.v("FILTRATION", "fragment view created after set industry from bundle $industry")
         }
-        setFragmentResultListener(REGI0N_RESULT_KEY) { requestKey, bundle ->
+        setFragmentResultListener(LOCATION_RESULT_KEY) { requestKey, bundle ->
             val country = getCountry(bundle)
             val region = getRegion(bundle)
             if (country != null) {
@@ -64,9 +62,6 @@ class FiltrationFragment : Fragment() {
         binding.checkBoxSalary.setOnClickListener {
             viewModel.setCheckbox(binding.checkBoxSalary.isChecked)
         }
-        viewModel.isChanged.observe(viewLifecycleOwner) {
-            showSaveButton(it)
-        }
         binding.buttonRemove.setOnClickListener {
             viewModel.setEmpty()
         }
@@ -76,9 +71,8 @@ class FiltrationFragment : Fragment() {
             setFragmentResult(FRAGMENT_RESULT_KEY, args)
             findNavController().navigateUp()
         }
-        binding.etSalary.setOnKeyListener(onKeyListener())
+        binding.etSalary.addTextChangedListener(textWatcher)
         binding.ilSalary.setEndIconOnClickListener {
-            binding.etSalary.setText("")
             viewModel.setSalary(null)
         }
         binding.ilSalary.isEndIconVisible = false
@@ -87,18 +81,43 @@ class FiltrationFragment : Fragment() {
         }
         binding.etAreaOfWork.setOnClickListener { onAreaClick.invoke() }
         binding.etIndustry.setOnClickListener { onIndustryClick.invoke() }
+        binding.ilSalary.setOnFocusChangeListener { view, b -> view.isActivated = false }
+        viewModel.isChanged.observe(viewLifecycleOwner) {
+            val canShowButton = viewModel.isFiltrationChanged() && it
+            showSaveButton(canShowButton)
+        }
     }
 
     private fun render(filtration: Filtration) {
         binding.apply {
             showArea(filtration.area)
             showIndustry(filtration.industry)
-            etSalary.setText(filtration.salary)
+            binding.etSalary.removeTextChangedListener(textWatcher)
+            renderSalary(filtration.salary)
+            binding.etSalary.addTextChangedListener(textWatcher)
             checkBoxSalary.isChecked = filtration.onlyWithSalary
             buttonRemove.isVisible = true
             val checkEmpty =
                 filtration.salary.isNullOrEmpty() && filtration.industry == null && filtration.area == null
             buttonRemove.isVisible = !(checkEmpty && !filtration.onlyWithSalary)
+        }
+    }
+
+    private fun renderSalary(salary: String?) {
+        val currentSelection = binding.etSalary.selectionEnd
+        binding.ilSalary.isActivated = !salary.isNullOrEmpty()
+        binding.etSalary.setText(salary)
+        if (binding.etSalary.hasFocus()) {
+            binding.ilSalary.isActivated = false
+            if (salary.isNullOrEmpty()) {
+                binding.etSalary.setSelection(0)
+            } else {
+                if (currentSelection > 0 && currentSelection < salary.length) {
+                    binding.etSalary.setSelection(currentSelection)
+                } else {
+                    binding.etSalary.setSelection(salary.length)
+                }
+            }
         }
     }
 
@@ -111,6 +130,7 @@ class FiltrationFragment : Fragment() {
                     area.name
                 }
                 etAreaOfWork.setText(text)
+                ilAreaOfWork.isActivated = true
                 ilAreaOfWork.setEndIconDrawable(R.drawable.clean_icon)
                 ilAreaOfWork.setEndIconOnClickListener {
                     viewModel.setArea(null)
@@ -118,6 +138,7 @@ class FiltrationFragment : Fragment() {
                 }
             } else {
                 etAreaOfWork.setText("")
+                ilAreaOfWork.isActivated = false
                 areaEndIconListener()
             }
         }
@@ -127,6 +148,7 @@ class FiltrationFragment : Fragment() {
         with(binding) {
             if (industry != null) {
                 etIndustry.setText(industry.name)
+                ilIndustry.isActivated = true
                 ilIndustry.setEndIconDrawable(R.drawable.clean_icon)
                 ilIndustry.setEndIconOnClickListener {
                     viewModel.setIndustry(null)
@@ -134,6 +156,7 @@ class FiltrationFragment : Fragment() {
                 }
             } else {
                 etIndustry.setText("")
+                ilIndustry.isActivated = false
                 industryEndIconListener()
             }
         }
@@ -201,18 +224,19 @@ class FiltrationFragment : Fragment() {
         bundle.getParcelable(SELECTED_INDUSTRY_KEY)
     }
 
-    private fun onKeyListener(): View.OnKeyListener? {
-        return View.OnKeyListener { view, keyCode, keyEvent ->
-            if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                val inputMethodManager =
-                    requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-                inputMethodManager?.hideSoftInputFromWindow(binding.etSalary.windowToken, 0)
-                viewModel.setSalary(binding.etSalary.text.toString())
-                true
-            } else {
-                false
-            }
+    private val textWatcher = object : TextWatcher {
+        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            // Empty
         }
+
+        override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            viewModel.setSalary(s.toString())
+        }
+
+        override fun afterTextChanged(p0: Editable?) {
+            // Empty
+        }
+
     }
 
     private fun toolbarSetup() {
@@ -232,7 +256,7 @@ class FiltrationFragment : Fragment() {
     }
 
     companion object {
-        private const val REGI0N_RESULT_KEY = "regionResult"
+        private const val LOCATION_RESULT_KEY = "locationResult"
         private const val INDUSTRY_RESULT_KEY = "industryResult"
         private const val FRAGMENT_RESULT_KEY = "fragmentResult"
         private const val IS_APPLY_KEY = "isApply"
